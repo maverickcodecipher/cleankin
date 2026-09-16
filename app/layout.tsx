@@ -34,9 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} w-full min-h-screen m-0 p-0 overflow-x-hidden h-full antialiased`}
     >
-      <body className="w-full min-h-screen overflow-x-hidden flex flex-col bg-background text-foreground">
+      <body className="w-full min-h-screen m-0 p-0 overflow-x-hidden flex flex-col bg-background text-foreground">
         <AuthProvider>
           <a href="#main-content" className="skip-link">Skip to main content</a>
           <CleanKinNavbar />

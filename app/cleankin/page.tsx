@@ -54,7 +54,7 @@ function StatBadge({ icon: Icon, value, suffix, label }: { icon: any; value: num
   }, [value]);
 
   return (
-    <div className="bg-white px-6 py-5 rounded-3xl border border-teal-100 shadow-sm flex items-center gap-4 min-w-[200px]">
+    <div className="bg-white px-6 py-5 rounded-3xl border border-teal-100 shadow-sm flex items-center gap-4 min-w-[200px] w-full max-w-sm mx-auto box-sizing: border-box">
       <div className="bg-[#0D5C75]/10 p-3 rounded-2xl">
         <Icon className="w-7 h-7 text-[#0D5C75]" />
       </div>
@@ -157,9 +157,9 @@ export default function CleanKinPage() {
   };
 
   return (
-    <div className="flex flex-col gap-16 py-16">
+    <div className="flex flex-col gap-16 py-16 w-full max-w-7xl mx-auto px-4 sm:px-6">
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 text-center w-full">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <span className="inline-block bg-[#0D5C75]/10 text-[#0D5C75] text-xs md:text-sm font-black uppercase tracking-widest px-5 py-2.5 rounded-full mb-6">
           Chennai Civic Action Network
         </span>
@@ -192,7 +192,7 @@ export default function CleanKinPage() {
       </section>
 
       {/* Quick Stats Bar */}
-      <section className="max-w-6xl mx-auto px-6 w-full">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
         <div className="bg-teal-50/60 border border-teal-100 rounded-[2rem] p-8 md:p-10 flex flex-wrap justify-center gap-5">
           {STATS.map(s => (
             <StatBadge key={s.label} icon={s.icon} value={s.value} suffix={s.suffix} label={s.label} />
@@ -201,7 +201,7 @@ export default function CleanKinPage() {
       </section>
 
       {/* Live Map */}
-      <section id="map" className="max-w-6xl mx-auto px-6 w-full scroll-mt-24">
+      <section id="map" className="w-full max-w-7xl mx-auto px-4 sm:px-6 scroll-mt-24">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-5">Live Chennai Civic Hotspots</h2>
           <div className="flex flex-wrap justify-center items-center gap-2.5">
@@ -249,7 +249,7 @@ export default function CleanKinPage() {
       </section>
 
       {/* Active Cleanup Drives */}
-      <section id="drives" className="max-w-6xl mx-auto px-6 w-full scroll-mt-24">
+      <section id="drives" className="w-full max-w-7xl mx-auto px-4 sm:px-6 scroll-mt-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 text-center md:text-left">
           <div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">Active Cleanup Drives</h2>
@@ -311,7 +311,7 @@ export default function CleanKinPage() {
       </section>
 
       {/* Impact Showcase */}
-      <section className="max-w-6xl mx-auto px-6 w-full">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <span className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: '#0D5C75' }}>Community Impact</span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3">Before & After: Chennai Transformed</h2>
@@ -321,7 +321,7 @@ export default function CleanKinPage() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-6xl mx-auto px-6 w-full">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="text-3xl font-bold text-center text-slate-900 mb-10">How CleanKin Works</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[

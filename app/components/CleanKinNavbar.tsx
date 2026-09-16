@@ -21,7 +21,7 @@ export default function CleanKinNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-teal-200">
+      <nav className="sticky top-0 z-50 w-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-teal-200">
         <div className="px-6 py-3 flex items-center justify-between gap-4 flex-nowrap whitespace-nowrap w-full">
           <div className="flex items-center gap-3 shrink-0">
             <Link
@@ -53,7 +53,7 @@ export default function CleanKinNavbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="hidden md:flex items-center gap-3 shrink-0">
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event('cleankin:open-report'))}
@@ -126,9 +126,11 @@ export default function CleanKinNavbar() {
                     window.dispatchEvent(new Event('cleankin:open-report'));
                     closeMenu();
                   }}
-                  className="w-full text-left px-4 py-3 rounded-xl text-gray-700 dark:text-gray-100 font-semibold hover:bg-teal-50 dark:hover:bg-neutral-800 transition-colors focus:outline-none"
+                  className="w-full text-left px-4 py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-colors focus:outline-none"
+                  style={{ backgroundColor: '#0D5C75' }}
                 >
-                  Report Spot
+                  <Megaphone className="w-4 h-4" />
+                  Report a Dump Spot
                 </button>
                 {CLEANKIN_LINKS.map(link => (
                   <Link
