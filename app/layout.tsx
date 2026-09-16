@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   description: "Report dump spots, organize cleanup drives, and track civic cleanup progress across Chennai.",
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -31,7 +36,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="w-full min-h-screen overflow-x-hidden flex flex-col bg-background text-foreground">
         <AuthProvider>
           <a href="#main-content" className="skip-link">Skip to main content</a>
           <CleanKinNavbar />

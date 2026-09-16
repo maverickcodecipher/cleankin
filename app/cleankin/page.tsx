@@ -10,7 +10,7 @@ import CleanupDriveCard, { type CleanupDrive } from '../components/CleanupDriveC
 import CreateDriveModal from '../components/CreateDriveModal';
 import ImpactGallery from '../components/ImpactGallery';
 import { supabase } from '../../lib/supabaseClient';
-import { CLEANKIN_REPORT_EVENT } from '../components/Navbar';
+import { CLEANKIN_REPORT_EVENT } from '../components/CleanKinNavbar';
 
 const CleanKinMap = dynamic(() => import('../components/CleanKinMap'), {
   ssr: false,
