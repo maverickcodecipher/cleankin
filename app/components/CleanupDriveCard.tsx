@@ -301,6 +301,7 @@ export default function CleanupDriveCard({
 }) {
   const [isRsvpOpen, setIsRsvpOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
   const eventDateTime = new Date(`${drive.event_date}T${drive.event_time || '07:00:00'}`);
   const hoursRemaining = (eventDateTime.getTime() - Date.now()) / (1000 * 60 * 60);
@@ -315,7 +316,18 @@ export default function CleanupDriveCard({
   const slot = Number.isFinite(hour) && hour < 12 ? 'Morning Slot' : 'Slot';
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+    <div className="perspective-1200">
+    <div
+      onMouseMove={e => {
+        const r = e.currentTarget.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        setTilt({ rx: -py * 8, ry: px * 10 });
+      }}
+      onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
+      className="ck-card-3d bg-white p-8 rounded-3xl border border-slate-100 shadow-lg shadow-teal-900/10 flex flex-col hover:shadow-2xl transition-shadow"
+      style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
+    >
       <div className="flex items-start justify-between gap-3 mb-3">
         <h3 className="text-xl font-extrabold text-slate-900 leading-snug">{drive.title}</h3>
         {isLocked ? (
@@ -396,15 +408,26 @@ export default function CleanupDriveCard({
         />
       )}
 
-      <button
-        type="button"
-        onClick={() => setIsDeleteOpen(true)}
-        aria-label={`Cancel ${drive.title}`}
-        className="mt-3 mx-auto inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-red-600 transition-colors"
-      >
-        <Trash2 className="w-3.5 h-3.5" />
-        Cancel / Delete Drive
-      </button>
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setIsDeleteOpen(true)}
+          aria-label={`Cancel ${drive.title}`}
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border-2 border-red-200 text-xs font-black text-red-600 hover:bg-red-50 hover:border-red-400 transition-all"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          Cancel Drive
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsDeleteOpen(true)}
+          aria-label={`Delete ${drive.title}`}
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-slate-900 text-xs font-black text-white hover:bg-red-600 transition-all"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          Delete Drive
+        </button>
+      </div>
 
       {isDeleteOpen && (
         <DeleteDriveModal
@@ -413,6 +436,7 @@ export default function CleanupDriveCard({
           onDeleted={(id) => onDriveDeleted?.(id)}
         />
       )}
+    </div>
     </div>
   );
 }

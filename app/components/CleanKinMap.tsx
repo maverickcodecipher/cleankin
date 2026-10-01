@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Link from 'next/link';
@@ -41,14 +41,40 @@ function pinIcon(status: string): L.DivIcon {
   const color = statusColor(status);
   return L.divIcon({
     className: 'cleankin-pin',
-    html: `<svg width="32" height="42" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg">
+    html: `<div class="animate-ck-pin"><svg width="34" height="44" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 10px 14px rgba(0,0,0,0.35))">
+      <ellipse cx="16" cy="39" rx="8" ry="3" fill="rgba(0,0,0,0.22)"/>
       <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="${color}" stroke="#fff" stroke-width="2"/>
       <circle cx="16" cy="14" r="5.5" fill="#fff"/>
-    </svg>`,
-    iconSize: [32, 42],
-    iconAnchor: [16, 42],
+      <circle cx="16" cy="14" r="2.4" fill="${color}"/>
+    </svg></div>`,
+    iconSize: [34, 44],
+    iconAnchor: [17, 42],
     popupAnchor: [0, -40],
   });
+}
+
+function pendingPinIcon(): L.DivIcon {
+  return L.divIcon({
+    className: 'cleankin-pin-pending',
+    html: `<div class="animate-ck-pin"><svg width="38" height="48" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 12px 18px rgba(13,92,117,0.6))">
+      <ellipse cx="16" cy="39" rx="9" ry="3.2" fill="rgba(13,92,117,0.25)"/>
+      <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="#0D5C75" stroke="#fff" stroke-width="2.5"/>
+      <circle cx="16" cy="14" r="6" fill="#fff"/>
+      <text x="16" y="18.5" text-anchor="middle" font-size="11" font-weight="900" fill="#0D5C75">+</text>
+    </svg></div>`,
+    iconSize: [38, 48],
+    iconAnchor: [19, 46],
+    popupAnchor: [0, -44],
+  });
+}
+
+function MapClickHandler({ picking, onPick }: { picking: boolean; onPick?: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      if (picking && onPick) onPick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
 }
 
 // Belt-and-braces: point Leaflet's default icon at CDN assets in case any
@@ -176,9 +202,9 @@ function SpotPopupContent({
         type="button"
         onClick={handleDelete}
         disabled={isDeleting}
-        className="text-red-600 hover:text-red-700 text-xs font-semibold mt-2 underline cursor-pointer"
+        className="w-full mt-2 px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-1.5"
       >
-        🗑 {isDeleting ? 'Deleting...' : 'Delete Spot'}
+        🗑 {isDeleting ? 'Deleting spot...' : 'Delete Spot'}
       </button>
       {deleteError && (
         <p className="text-xs font-bold text-red-600 mt-1">{deleteError}</p>
@@ -188,9 +214,9 @@ function SpotPopupContent({
           type="button"
           onClick={handleCancelDrive}
           disabled={isCancelling}
-          className="block text-slate-500 hover:text-amber-700 text-xs font-semibold mt-1 underline cursor-pointer"
+          className="w-full mt-2 px-4 py-2.5 rounded-full border-2 border-amber-300 text-amber-800 text-xs font-black hover:bg-amber-50 transition-all cursor-pointer"
         >
-          {isCancelling ? 'Cancelling...' : 'Cancel linked drive'}
+          {isCancelling ? 'Cancelling drive...' : 'Cancel linked drive'}
         </button>
       )}
       {driveError && (
@@ -203,7 +229,7 @@ function SpotPopupContent({
   );
 }
 
-export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSpotDeleted, onDriveCancelled }: { statusFilter?: SpotStatusFilter; refreshKey?: number; onSpotDeleted?: (spotId: string | number) => void; onDriveCancelled?: (spotId: string | number) => void }) {
+export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSpotDeleted, onDriveCancelled, picking = false, pendingPin = null, onPick }: { statusFilter?: SpotStatusFilter; refreshKey?: number; onSpotDeleted?: (spotId: string | number) => void; onDriveCancelled?: (spotId: string | number) => void; picking?: boolean; pendingPin?: { lat: number; lng: number } | null; onPick?: (lat: number, lng: number) => void }) {
   const [spots, setSpots] = useState<DumpSpot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -249,16 +275,26 @@ export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSp
           <p className="font-bold text-slate-400">Loading Chennai hotspots...</p>
         </div>
       )}
+      {picking && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[600] pointer-events-none">
+          <div className="ck-glass border border-[#0D5C75]/30 shadow-xl rounded-full px-5 py-2.5 text-sm font-black text-[#0D5C75] flex items-center gap-2 animate-ck-float">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#0D5C75] animate-ping" />
+            Click anywhere on the map to drop your dump pin
+          </div>
+        </div>
+      )}
       <MapContainer
         center={CHENNAI_CENTER}
         zoom={DEFAULT_ZOOM}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         className="w-full h-full min-h-[500px] rounded-[2rem] z-0"
+        style={{ cursor: picking ? 'crosshair' : undefined }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <MapClickHandler picking={picking} onPick={onPick} />
         {visibleSpots.map(spot => (
           <Marker
             key={spot.id}
@@ -275,6 +311,17 @@ export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSp
             </Popup>
           </Marker>
         ))}
+        {pendingPin && Number.isFinite(pendingPin.lat) && Number.isFinite(pendingPin.lng) && (
+          <Marker position={[pendingPin.lat, pendingPin.lng]} icon={pendingPinIcon()}>
+            <Popup>
+              <div className="min-w-[200px] text-center">
+                <p className="font-extrabold text-slate-900 text-sm">New dump pin</p>
+                <p className="text-xs font-bold text-slate-500 mb-3">{pendingPin.lat.toFixed(5)}, {pendingPin.lng.toFixed(5)}</p>
+                <p className="text-xs font-semibold text-[#0D5C75]">Complete the report form to publish this pin.</p>
+              </div>
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );

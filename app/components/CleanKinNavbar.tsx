@@ -14,14 +14,19 @@ const CLEANKIN_LINKS = [
 ];
 
 export default function CleanKinNavbar() {
-  const { isAuthenticated, user, openAuthModal, logout } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const closeMenu = () => setIsMobileMenuOpen(false);
 
+  const handleSignOut = async () => {
+    await signOut();
+    closeMenu();
+  };
+
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-teal-200">
+      <nav className="sticky top-0 z-50 w-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-slate-200">
         <div className="px-6 py-3 flex items-center justify-between gap-4 flex-nowrap whitespace-nowrap w-full">
           <div className="flex items-center gap-3 shrink-0">
             <Link
@@ -68,11 +73,11 @@ export default function CleanKinNavbar() {
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    {user.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border-2 border-teal-600 shadow-sm" />
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.name ?? 'User'} className="w-10 h-10 rounded-full object-cover border-2 border-teal-600 shadow-sm" />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                        {user.name.charAt(0)}
+                        {(user.name ?? '?').charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div className="hidden lg:flex flex-col text-left">
@@ -80,13 +85,13 @@ export default function CleanKinNavbar() {
                       <span className="text-[11px] font-medium text-slate-500 leading-none">Volunteer</span>
                     </div>
                   </div>
-                  <button onClick={logout} className="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all flex items-center gap-1.5 focus:outline-none" aria-label="Sign out">
+                  <button onClick={handleSignOut} className="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all flex items-center gap-1.5 focus:outline-none" aria-label="Sign out">
                     <LogOut className="w-3.5 h-3.5" />
                     Sign Out
                   </button>
                 </div>
               ) : (
-                <button onClick={() => openAuthModal()} className="px-5 py-2.5 rounded-full text-teal-800 hover:bg-teal-50 font-bold text-sm transition-all focus:outline-none flex items-center gap-1.5">
+                <button onClick={() => window.dispatchEvent(new Event('cleankin:open-report'))} className="px-5 py-2.5 rounded-full text-teal-800 hover:bg-teal-50 font-bold text-sm transition-all focus:outline-none flex items-center gap-1.5">
                   <UserIcon className="w-4 h-4" />
                   Sign In
                 </button>
@@ -146,11 +151,11 @@ export default function CleanKinNavbar() {
                   {isAuthenticated && user ? (
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center gap-3 px-4">
-                        {user.avatar ? (
-                          <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border-2 border-teal-600" />
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt={user.name ?? 'User'} className="w-10 h-10 rounded-full object-cover border-2 border-teal-600" />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
-                            {user.name.charAt(0)}
+                            {(user.name ?? '?').charAt(0).toUpperCase()}
                           </div>
                         )}
                         <div>
@@ -159,7 +164,7 @@ export default function CleanKinNavbar() {
                         </div>
                       </div>
                       <button
-                        onClick={() => { logout(); closeMenu(); }}
+                        onClick={handleSignOut}
                         className="px-4 py-3 rounded-xl text-red-600 font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left focus:outline-none"
                       >
                         Sign Out
@@ -167,7 +172,7 @@ export default function CleanKinNavbar() {
                     </div>
                   ) : (
                     <button
-                      onClick={() => { openAuthModal(); closeMenu(); }}
+                      onClick={() => { window.dispatchEvent(new Event('cleankin:open-report')); closeMenu(); }}
                       className="w-full text-left px-4 py-3 rounded-xl text-teal-800 dark:text-teal-400 font-semibold hover:bg-teal-50 dark:hover:bg-neutral-800 transition-colors focus:outline-none"
                     >
                       Sign In

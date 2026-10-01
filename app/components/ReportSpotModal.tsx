@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X, MapPin, Camera, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -20,9 +20,11 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onSpotReported?: () => void;
+  initialLat?: number | null;
+  initialLng?: number | null;
 };
 
-export default function ReportSpotModal({ open, onClose, onSpotReported }: Props) {
+export default function ReportSpotModal({ open, onClose, onSpotReported, initialLat, initialLng }: Props) {
   const [title, setTitle] = useState('');
   const [locality, setLocality] = useState('');
   const [description, setDescription] = useState('');
@@ -36,6 +38,15 @@ export default function ReportSpotModal({ open, onClose, onSpotReported }: Props
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Sync map-picked coords into the form whenever modal opens with a pin.
+  useEffect(() => {
+    if (open && initialLat != null && initialLng != null && Number.isFinite(initialLat) && Number.isFinite(initialLng)) {
+      setLat(String(initialLat));
+      setLng(String(initialLng));
+      setGpsNote('Pinned from map — drag-free, edit if needed.');
+    }
+  }, [open, initialLat, initialLng]);
 
   if (!open) return null;
 
@@ -128,14 +139,14 @@ export default function ReportSpotModal({ open, onClose, onSpotReported }: Props
 
   return (
     <div
-      className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 perspective-1200"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Report a dump spot"
     >
       <div
-        className="bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl"
+        className="animate-ck-modal-in preserve-3d bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl border border-teal-100"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-6">

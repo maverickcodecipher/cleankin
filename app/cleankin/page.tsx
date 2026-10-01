@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { MapPin, CalendarCheck, Users, Megaphone, CalendarDays } from 'lucide-react';
+import { MapPin, CalendarCheck, Users, CalendarDays, MousePointerClick, Trash2, FolderOpen } from 'lucide-react';
 import Link from 'next/link';
 import type { SpotStatusFilter } from '../components/CleanKinMap';
 import ReportSpotModal from '../components/ReportSpotModal';
 import CleanupDriveCard, { type CleanupDrive } from '../components/CleanupDriveCard';
 import CreateDriveModal from '../components/CreateDriveModal';
 import ImpactGallery from '../components/ImpactGallery';
+import Hero3D from '../components/Hero3D';
+import MyReportsModal from '../components/MyReportsModal';
 import { supabase } from '../../lib/supabaseClient';
 import { CLEANKIN_REPORT_EVENT } from '../components/CleanKinNavbar';
 
@@ -35,6 +37,7 @@ const STATS = [
 
 function StatBadge({ icon: Icon, value, suffix, label }: { icon: any; value: number; suffix: string; label: string }) {
   const [count, setCount] = useState(0);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -54,16 +57,28 @@ function StatBadge({ icon: Icon, value, suffix, label }: { icon: any; value: num
   }, [value]);
 
   return (
-    <div className="bg-white px-6 py-5 rounded-3xl border border-teal-100 shadow-sm flex items-center gap-4 min-w-[200px] w-full max-w-sm mx-auto box-sizing: border-box">
-      <div className="bg-[#0D5C75]/10 p-3 rounded-2xl">
-        <Icon className="w-7 h-7 text-[#0D5C75]" />
-      </div>
-      <div>
-        <p className="text-3xl font-black text-slate-900">
-          {count}
-          {suffix}
-        </p>
-        <p className="text-xs font-black uppercase tracking-widest text-slate-400">{label}</p>
+    <div className="perspective-1200 flex-1 min-w-[200px]">
+      <div
+        onMouseMove={e => {
+          const r = e.currentTarget.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          setTilt({ rx: -py * 14, ry: px * 14 });
+        }}
+        onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
+        className="ck-card-3d bg-white/85 backdrop-blur px-6 py-5 rounded-3xl border border-teal-100 shadow-lg shadow-teal-900/10 flex items-center gap-4"
+        style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(0)` }}
+      >
+        <div className="bg-gradient-to-br from-[#0D5C75] to-teal-500 p-3 rounded-2xl shadow-lg" style={{ transform: 'translateZ(30px)' }}>
+          <Icon className="w-7 h-7 text-white" />
+        </div>
+        <div style={{ transform: 'translateZ(18px)' }}>
+          <p className="text-3xl font-black text-slate-900">
+            {count}
+            {suffix}
+          </p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">{label}</p>
+        </div>
       </div>
     </div>
   );
@@ -80,6 +95,9 @@ export default function CleanKinPage() {
   const [drivesRefreshKey, setDrivesRefreshKey] = useState(0);
   const [cleanedCount, setCleanedCount] = useState(0);
   const [volunteerCount, setVolunteerCount] = useState(0);
+  const [picking, setPicking] = useState(false);
+  const [pendingPin, setPendingPin] = useState<{ lat: number; lng: number } | null>(null);
+  const [showMyReports, setShowMyReports] = useState(false);
 
   // Open the report modal when triggered from the navbar (same tab or after navigation).
   useEffect(() => {
@@ -153,57 +171,58 @@ export default function CleanKinPage() {
 
   const handleSpotReported = () => {
     setMapRefreshKey(k => k + 1);
-    showToast('Spot reported! Your pin is now live on the Chennai Civic Map.');
+    setPicking(false);
+    setPendingPin(null);
+    showToast('Spot reported! Your 3D pin is now live on the Chennai Civic Map.');
+  };
+
+  const handleMapPick = (lat: number, lng: number) => {
+    setPendingPin({ lat, lng });
+    setPicking(false);
+    setIsModalOpen(true);
+    showToast(`Pin dropped at ${lat.toFixed(4)}, ${lng.toFixed(4)} — complete the form to publish.`);
+    document.getElementById('report-form-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const startPickMode = () => {
+    setPicking(true);
+    showToast('Pin mode ON — click anywhere on the map below to place your dump pin.');
+    setTimeout(() => document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
   return (
-    <div className="flex flex-col gap-16 py-16 w-full max-w-7xl mx-auto px-4 sm:px-6">
-      {/* Hero */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <span className="inline-block bg-[#0D5C75]/10 text-[#0D5C75] text-xs md:text-sm font-black uppercase tracking-widest px-5 py-2.5 rounded-full mb-6">
-          Chennai Civic Action Network
-        </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.05]">
-          CleanKin Chennai — Turn Dump Spots into Community Action
-        </h1>
-        <p className="text-xl text-slate-700 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Spot polluted drains, riverbanks, or illegal dumps. Report spots publicly, mobilize weekend drives, and track civic cleanup progress across Chennai.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="px-8 py-4 rounded-full text-white font-semibold hover:brightness-110 text-lg h-14 flex items-center shadow-md transition-all"
-            style={{ backgroundColor: '#0D5C75' }}
-          >
-            <Megaphone className="w-5 h-5 mr-2" />
-            Report a Dump Spot
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsOrganizeOpen(true)}
-            className="px-8 py-4 rounded-full border-2 font-semibold text-lg h-14 flex items-center transition-all hover:bg-teal-50"
-            style={{ borderColor: '#0D5C75', color: '#0D5C75' }}
-          >
-            <CalendarDays className="w-5 h-5 mr-2" />
-            Organize a Drive
-          </button>
-        </div>
-      </section>
+    <div className="flex flex-col gap-12 py-10 w-full max-w-7xl mx-auto px-4 sm:px-6">
+      {/* 3D Hero */}
+      <Hero3D
+        onReport={() => setIsModalOpen(true)}
+        onOrganize={() => setIsOrganizeOpen(true)}
+        onPickOnMap={startPickMode}
+        picking={picking}
+      />
+      <div id="report-form-anchor" className="sr-only" />
 
-      {/* Quick Stats Bar */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="bg-teal-50/60 border border-teal-100 rounded-[2rem] p-8 md:p-10 flex flex-wrap justify-center gap-5">
+      {/* Quick Stats Bar — 3D tilt */}
+      <section className="w-full max-w-7xl mx-auto px-1 sm:px-2">
+        <div className="bg-gradient-to-br from-teal-50/80 via-white to-orange-50/60 border border-teal-100 rounded-[2rem] p-6 md:p-8 flex flex-wrap justify-center gap-5 shadow-lg shadow-teal-900/5">
           {STATS.map(s => (
             <StatBadge key={s.label} icon={s.icon} value={s.value} suffix={s.suffix} label={s.label} />
           ))}
         </div>
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
+          <button type="button" onClick={() => setShowMyReports(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-sm font-black text-slate-600 hover:border-[#0D5C75] hover:text-[#0D5C75] transition-all">
+            <FolderOpen className="h-4 w-4" /> My Reports — delete / mark cleared
+          </button>
+          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-sm font-bold text-slate-500">
+            <Trash2 className="h-4 w-4" /> Every spot & drive has Delete / Cancel
+          </span>
+        </div>
       </section>
 
-      {/* Live Map */}
-      <section id="map" className="w-full max-w-7xl mx-auto px-4 sm:px-6 scroll-mt-24">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-5">Live Chennai Civic Hotspots</h2>
+      {/* Live Map — 3D frame + click-to-pin */}
+      <section id="map" className="w-full max-w-7xl mx-auto px-1 sm:px-2 scroll-mt-24">
+        <div className="text-center mb-6">
+          <h2 className="ck-text-3d text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Live Chennai Civic Hotspots</h2>
+          <p className="text-slate-600 font-medium mb-5">Click <b>Pin on map</b>, then click the map to drop a 3D pin. Open any pin to Delete it or Cancel its linked drive.</p>
           <div className="flex flex-wrap justify-center items-center gap-2.5">
             {MAP_FILTERS.map(f => (
               <button
@@ -213,7 +232,7 @@ export default function CleanKinPage() {
                 aria-pressed={mapFilter === f.value}
                 className={`px-5 py-2.5 rounded-full text-sm font-black transition-all duration-200 focus:outline-none ${
                   mapFilter === f.value
-                    ? 'text-white shadow-md'
+                    ? 'text-white shadow-lg shadow-teal-900/25 scale-105'
                     : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-700'
                 }`}
                 style={mapFilter === f.value ? { backgroundColor: '#0D5C75' } : undefined}
@@ -223,42 +242,66 @@ export default function CleanKinPage() {
             ))}
             <button
               type="button"
+              onClick={startPickMode}
+              className={`px-5 py-2.5 rounded-full text-sm font-black shadow-md transition-all focus:outline-none flex items-center gap-1.5 ${picking ? 'bg-orange-500 text-white animate-pulse' : 'text-white hover:brightness-110'}`}
+              style={picking ? undefined : { backgroundColor: '#0D5C75' }}
+            >
+              <MousePointerClick className="h-4 w-4" />
+              {picking ? 'Click map now…' : '+ Pin on map'}
+            </button>
+            {picking && (
+              <button type="button" onClick={() => setPicking(false)} className="px-5 py-2.5 rounded-full text-sm font-black bg-white border border-slate-300 text-slate-600 hover:bg-slate-50">
+                Cancel pin mode
+              </button>
+            )}
+            <button
+              type="button"
               onClick={() => setIsModalOpen(true)}
-              className="px-5 py-2.5 rounded-full text-sm font-black text-white shadow-md hover:brightness-110 transition-all duration-200 focus:outline-none"
-              style={{ backgroundColor: '#0D5C75' }}
+              className="px-5 py-2.5 rounded-full text-sm font-black bg-white border-2 text-[#0D5C75] hover:bg-teal-50 transition-all"
+              style={{ borderColor: '#0D5C75' }}
             >
               + Report a Spot
             </button>
           </div>
+          {pendingPin && (
+            <p className="mt-3 inline-block text-sm font-bold text-[#0D5C75] bg-teal-50 border border-teal-200 rounded-full px-4 py-2">
+              Pending pin: {pendingPin.lat.toFixed(5)}, {pendingPin.lng.toFixed(5)} — finish the form to publish · <button type="button" onClick={() => setPendingPin(null)} className="underline font-black">clear</button>
+            </p>
+          )}
         </div>
-        <div className="rounded-[2rem] overflow-hidden border border-teal-100 shadow-md h-[500px]">
-          <CleanKinMap
-            statusFilter={mapFilter}
-            refreshKey={mapRefreshKey}
-            onSpotDeleted={() => {
-              setMapRefreshKey(k => k + 1);
-              showToast('Spot removed from map.');
-            }}
-            onDriveCancelled={() => {
-              setMapRefreshKey(k => k + 1);
-              setDrivesRefreshKey(k => k + 1);
-              showToast('Linked drive cancelled. Pin reset to Open.');
-            }}
-          />
+        <div className="perspective-1200">
+          <div className="ck-map-frame rounded-[2rem] overflow-hidden border border-teal-100 h-[560px] relative" style={{ transform: 'rotateX(2deg)' }}>
+            <CleanKinMap
+              statusFilter={mapFilter}
+              refreshKey={mapRefreshKey}
+              picking={picking}
+              pendingPin={pendingPin}
+              onPick={handleMapPick}
+              onSpotDeleted={() => {
+                setMapRefreshKey(k => k + 1);
+                showToast('Spot deleted and removed from map.');
+              }}
+              onDriveCancelled={() => {
+                setMapRefreshKey(k => k + 1);
+                setDrivesRefreshKey(k => k + 1);
+                showToast('Linked drive cancelled. Pin reset to Open.');
+              }}
+            />
+          </div>
         </div>
       </section>
 
       {/* Active Cleanup Drives */}
-      <section id="drives" className="w-full max-w-7xl mx-auto px-4 sm:px-6 scroll-mt-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 text-center md:text-left">
+      <section id="drives" className="w-full max-w-7xl mx-auto px-1 sm:px-2 scroll-mt-24">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 text-center md:text-left">
           <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">Active Cleanup Drives</h2>
-            <p className="text-lg text-slate-600 mt-2">Pick a weekend drive and show up — we handle the rest.</p>
+            <h2 className="ck-text-3d text-3xl md:text-4xl font-extrabold text-slate-900">Active Cleanup Drives</h2>
+            <p className="text-lg text-slate-600 mt-2">Join a drive — or cancel / delete any drive you own. Every card has Delete.</p>
           </div>
           <button
             type="button"
             onClick={() => setIsOrganizeOpen(true)}
-            className="shrink-0 px-6 py-3.5 rounded-full border-2 font-black text-sm hover:bg-teal-50 transition-all"
+            className="shrink-0 px-6 py-3.5 rounded-full border-2 font-black text-sm hover:bg-teal-50 transition-all shadow-sm"
             style={{ borderColor: '#0D5C75', color: '#0D5C75' }}
           >
             + Organize a Drive
@@ -321,15 +364,15 @@ export default function CleanKinPage() {
       </section>
 
       {/* How it works */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-3xl font-bold text-center text-slate-900 mb-10">How CleanKin Works</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+      <section className="w-full max-w-7xl mx-auto px-1 sm:px-2">
+        <h2 className="text-3xl font-bold text-center text-slate-900 mb-8">How CleanKin Works</h2>
+        <div className="grid md:grid-cols-3 gap-6 perspective-1200">
           {[
-            { step: '01', title: 'Report a spot', desc: 'Snap a photo of a dump, clogged drain, or littered riverbank and pin it on the Chennai map.' },
-            { step: '02', title: 'Mobilize a drive', desc: 'Spots with enough reports trigger a weekend cleanup drive with volunteers and supplies.' },
-            { step: '03', title: 'Track progress', desc: 'Before/after photos and ward-level stats keep every cleanup public and accountable.' },
+            { step: '01', title: 'Pin a dump in 3D', desc: 'Hit Pin on map, click the Leaflet map to drop a bouncing 3D pin, add photo + locality.' },
+            { step: '02', title: 'Mobilize & manage', desc: 'Link spots to weekend drives. Cancel drives, delete spots, or clear reports anytime.' },
+            { step: '03', title: 'Track progress', desc: 'Before/after gallery + ward stats keep every cleanup public and accountable.' },
           ].map(item => (
-            <div key={item.step} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+            <div key={item.step} className="ck-card-3d bg-white p-8 rounded-3xl border border-slate-100 shadow-lg shadow-teal-900/5 hover:-translate-y-1.5 hover:shadow-xl transition-all">
               <p className="text-sm font-black text-[#0D5C75] tracking-widest mb-3">{item.step}</p>
               <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
               <p className="text-slate-600">{item.desc}</p>
@@ -345,9 +388,15 @@ export default function CleanKinPage() {
 
       <ReportSpotModal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => { setIsModalOpen(false); }}
         onSpotReported={handleSpotReported}
+        initialLat={pendingPin?.lat ?? null}
+        initialLng={pendingPin?.lng ?? null}
       />
+
+      {showMyReports && (
+        <MyReportsModal open={showMyReports} onClose={() => setShowMyReports(false)} />
+      )}
 
       <CreateDriveModal
         open={isOrganizeOpen}

@@ -116,14 +116,14 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
 
   return (
     <div
-      className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 perspective-1200"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Organize a cleanup drive"
     >
       <div
-        className="bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl"
+        className="animate-ck-modal-in bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl border border-teal-100"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-2">
