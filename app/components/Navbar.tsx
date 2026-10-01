@@ -57,11 +57,11 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-slate-50/95 backdrop-blur-sm border-b border-slate-200">
+      <nav className="sticky top-0 z-50 w-full bg-[#060A08]/92 backdrop-blur-md border-b border-[#1D2B23]">
         <div className="px-6 py-3 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">CleanKin</span>
-            <span className="inline-block w-3 h-3 rounded-full bg-civic-orange" />
+            <span className="text-2xl font-black tracking-tight text-white">CleanKin<span className="text-[#35F27C]">.</span></span>
+            <span className="inline-block w-3 h-3 rounded-full bg-[#35F27C] shadow-[0_0_12px_rgba(53,242,124,0.9)]" />
           </Link>
 
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={handleSignIn}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-civic-orange hover:bg-orange-50 transition-all focus:outline-none"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#35F27C] text-[#04120A] text-sm font-black hover:brightness-110 transition-all focus:outline-none shadow-[0_0_18px_rgba(53,242,124,0.4)]"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -82,24 +82,24 @@ export default function Navbar() {
             ) : (
               <>
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.name ?? 'User'} className="w-9 h-9 rounded-full object-cover border-2 border-civic-orange/30" />
+                  <img src={user.avatar_url} alt={user.name ?? 'User'} className="w-9 h-9 rounded-full object-cover border-2 border-[#35F27C]/60" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-civic-orange text-white flex items-center justify-center font-bold text-sm">
+                  <div className="w-9 h-9 rounded-full bg-[#35F27C] text-[#04120A] flex items-center justify-center font-black text-sm">
                     {(user.name ?? '?').charAt(0).toUpperCase()}
                   </div>
                 )}
-                <span className="text-sm font-semibold text-slate-700 hidden sm:block">{user.name}</span>
+                <span className="text-sm font-bold text-white hidden sm:block">{user.name}</span>
                 <button
                   type="button"
                   onClick={() => setShowMyReports(true)}
-                  className="px-4 py-2 rounded-full text-sm font-bold text-civic-orange hover:bg-civic-orange/10 border border-civic-orange/20 hover:border-civic-orange transition-all focus:outline-none"
+                  className="px-4 py-2 rounded-full text-sm font-black text-[#04120A] bg-[#35F27C] hover:brightness-110 transition-all focus:outline-none"
                 >
                   My Reports
                 </button>
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-dump-rose hover:bg-rose-50 border border-transparent hover:border-dump-rose/20 transition-all focus:outline-none"
+                  className="px-4 py-2 rounded-full text-sm font-bold text-[#93A89A] hover:text-[#FF5470] hover:bg-[#FF5470]/10 border border-transparent hover:border-[#FF5470]/30 transition-all focus:outline-none"
                 >
                   Sign Out
                 </button>

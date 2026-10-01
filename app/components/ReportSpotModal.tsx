@@ -40,6 +40,7 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Sync map-picked coords into the form whenever modal opens with a pin.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open && initialLat != null && initialLng != null && Number.isFinite(initialLat) && Number.isFinite(initialLng)) {
       setLat(String(initialLat));
@@ -47,6 +48,7 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
       setGpsNote('Pinned from map — drag-free, edit if needed.');
     }
   }, [open, initialLat, initialLng]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!open) return null;
 
@@ -146,27 +148,27 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
       aria-label="Report a dump spot"
     >
       <div
-        className="animate-ck-modal-in preserve-3d bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl border border-teal-100"
+        className="animate-ck-modal-in preserve-3d bg-[#0B100D] rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-[0_0_50px_rgba(53,242,124,0.15)] border border-[#35F27C]/25"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900">Report a Dump Spot</h2>
-            <p className="text-sm font-bold text-slate-500">Your pin goes live on the Chennai Civic Map.</p>
+            <h2 className="text-2xl font-black text-white">Report a Dump Spot</h2>
+            <p className="text-sm font-bold text-[#93A89A]">Your pin goes live on the night radar. +25 XP for your zone.</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5 text-[#93A89A]" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="spot-title">Spot Title</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="spot-title">Spot Title</label>
             <input
               id="spot-title"
               type="text"
@@ -174,18 +176,18 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
               onChange={e => setTitle(e.target.value)}
               placeholder="Clogged drain near bus stand"
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="spot-locality">Locality / Neighborhood</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="spot-locality">Locality / Neighborhood</label>
             <select
               id="spot-locality"
               value={locality}
               onChange={e => setLocality(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm bg-white"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             >
               <option value="" disabled>Select area…</option>
               {CHENNAI_AREAS.map(a => (
@@ -195,19 +197,19 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="spot-desc">Description</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="spot-desc">Description</label>
             <textarea
               id="spot-desc"
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Landmark details and waste types (plastic, debris, domestic waste)…"
               rows={3}
-              className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full p-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5">Location coordinates</label>
+            <label className="block text-sm font-black text-white mb-1.5">Location coordinates</label>
             <div className="grid grid-cols-2 gap-3 mb-2.5">
               <input
                 type="number"
@@ -215,7 +217,7 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
                 value={lat}
                 onChange={e => setLat(e.target.value)}
                 aria-label="Latitude"
-                className="h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                className="h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               />
               <input
                 type="number"
@@ -223,22 +225,22 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
                 value={lng}
                 onChange={e => setLng(e.target.value)}
                 aria-label="Longitude"
-                className="h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                className="h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               />
             </div>
             <button
               type="button"
               onClick={useGps}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-[#0D5C75] text-[#0D5C75] text-sm font-black hover:bg-teal-50 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-[#35F27C]/60 text-[#35F27C] text-sm font-black hover:bg-[#35F27C]/10 transition-colors"
             >
               <MapPin className="w-4 h-4" />
               Use My Current GPS
             </button>
-            {gpsNote && <p className="mt-2 text-xs font-bold text-slate-500">{gpsNote}</p>}
+            <p className="mt-2 text-xs font-bold text-[#93A89A]">{gpsNote}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5">Photo</label>
+            <label className="block text-sm font-black text-white mb-1.5">Photo</label>
             <input
               ref={fileRef}
               type="file"
@@ -250,7 +252,7 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="w-full h-14 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0D5C75] text-sm font-black text-slate-500 hover:text-[#0D5C75] transition-colors flex items-center justify-center gap-2"
+              className="w-full h-14 rounded-xl border-2 border-dashed border-[#2A3B32] hover:border-[#35F27C] text-sm font-black text-[#93A89A] hover:text-[#35F27C] transition-colors flex items-center justify-center gap-2"
             >
               <Camera className="w-5 h-5" />
               {photoPreview ? 'Change photo' : 'Take photo / Upload image'}
@@ -262,31 +264,31 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="spot-name">Your name</label>
+              <label className="block text-sm font-black text-white mb-1.5" htmlFor="spot-name">Your name</label>
               <input
                 id="spot-name"
                 type="text"
                 value={reporterName}
                 onChange={e => setReporterName(e.target.value)}
                 placeholder="Optional"
-                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               />
             </div>
             <div>
-              <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="spot-phone">Phone</label>
+              <label className="block text-sm font-black text-white mb-1.5" htmlFor="spot-phone">Phone</label>
               <input
                 id="spot-phone"
                 type="tel"
                 value={reporterPhone}
                 onChange={e => setReporterPhone(e.target.value)}
                 placeholder="Optional"
-                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               />
             </div>
           </div>
 
           {error && (
-            <p className="text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            <p className="text-sm font-bold text-[#FF8FA3] bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl px-4 py-3">
               {error}
             </p>
           )}
@@ -294,8 +296,7 @@ export default function ReportSpotModal({ open, onClose, onSpotReported, initial
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-14 rounded-full text-white font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
-            style={{ backgroundColor: '#0D5C75' }}
+            className="w-full h-14 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(53,242,124,0.35)]"
           >
             {isSubmitting ? (
               <>

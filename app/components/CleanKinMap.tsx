@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useState, useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Link from 'next/link';
@@ -24,16 +24,16 @@ const DEFAULT_ZOOM = 12;
 
 function statusColor(status: string): string {
   const s = status.toLowerCase();
-  if (s.includes('clean')) return '#16A34A';
-  if (s.includes('schedul') || s.includes('drive')) return '#D97706';
-  return '#DC2626';
+  if (s.includes('clean')) return '#35F27C';
+  if (s.includes('schedul') || s.includes('drive')) return '#FBBF24';
+  return '#FF5470';
 }
 
 function statusBadgeClass(status: string): string {
   const s = status.toLowerCase();
-  if (s.includes('clean')) return 'bg-green-100 text-green-800 border-green-200';
-  if (s.includes('schedul') || s.includes('drive')) return 'bg-amber-100 text-amber-800 border-amber-200';
-  return 'bg-red-100 text-red-800 border-red-200';
+  if (s.includes('clean')) return 'bg-[#35F27C]/15 text-[#35F27C] border-[#35F27C]/40';
+  if (s.includes('schedul') || s.includes('drive')) return 'bg-amber-400/15 text-amber-300 border-amber-400/40';
+  return 'bg-[#FF5470]/15 text-[#FF8FA3] border-[#FF5470]/40';
 }
 
 /** Custom SVG pin — also sidesteps the broken Next.js default-icon asset paths. */
@@ -41,10 +41,10 @@ function pinIcon(status: string): L.DivIcon {
   const color = statusColor(status);
   return L.divIcon({
     className: 'cleankin-pin',
-    html: `<div class="animate-ck-pin"><svg width="34" height="44" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 10px 14px rgba(0,0,0,0.35))">
-      <ellipse cx="16" cy="39" rx="8" ry="3" fill="rgba(0,0,0,0.22)"/>
-      <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="${color}" stroke="#fff" stroke-width="2"/>
-      <circle cx="16" cy="14" r="5.5" fill="#fff"/>
+    html: `<div class="animate-ck-pin"><svg width="34" height="44" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px ${color})">
+      <ellipse cx="16" cy="39" rx="8" ry="3" fill="rgba(0,0,0,0.6)"/>
+      <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="${color}" stroke="#04120A" stroke-width="2"/>
+      <circle cx="16" cy="14" r="5.5" fill="#04120A"/>
       <circle cx="16" cy="14" r="2.4" fill="${color}"/>
     </svg></div>`,
     iconSize: [34, 44],
@@ -56,11 +56,11 @@ function pinIcon(status: string): L.DivIcon {
 function pendingPinIcon(): L.DivIcon {
   return L.divIcon({
     className: 'cleankin-pin-pending',
-    html: `<div class="animate-ck-pin"><svg width="38" height="48" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 12px 18px rgba(13,92,117,0.6))">
-      <ellipse cx="16" cy="39" rx="9" ry="3.2" fill="rgba(13,92,117,0.25)"/>
-      <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="#0D5C75" stroke="#fff" stroke-width="2.5"/>
-      <circle cx="16" cy="14" r="6" fill="#fff"/>
-      <text x="16" y="18.5" text-anchor="middle" font-size="11" font-weight="900" fill="#0D5C75">+</text>
+    html: `<div class="animate-ck-pin"><svg width="38" height="48" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 14px rgba(53,242,124,0.8))">
+      <ellipse cx="16" cy="39" rx="9" ry="3.2" fill="rgba(53,242,124,0.25)"/>
+      <path d="M16 1C8.8 1 3 6.8 3 14c0 9.75 13 27 13 27s13-17.25 13-27C29 6.8 23.2 1 16 1z" fill="#35F27C" stroke="#04120A" stroke-width="2.5"/>
+      <circle cx="16" cy="14" r="6" fill="#04120A"/>
+      <text x="16" y="18.5" text-anchor="middle" font-size="11" font-weight="900" fill="#35F27C">+</text>
     </svg></div>`,
     iconSize: [38, 48],
     iconAnchor: [19, 46],
@@ -74,6 +74,19 @@ function MapClickHandler({ picking, onPick }: { picking: boolean; onPick?: (lat:
       if (picking && onPick) onPick(e.latlng.lat, e.latlng.lng);
     },
   });
+  return null;
+}
+
+/** Cinematic fly-to when a fresh report lands. */
+function FlyToPin({ target }: { target: { lat: number; lng: number; nonce: number } | null }) {
+  const map = useMap();
+  const last = useRef(0);
+  useEffect(() => {
+    if (target && target.nonce !== last.current) {
+      last.current = target.nonce;
+      map.flyTo([target.lat, target.lng], 14, { duration: 1.4 });
+    }
+  }, [target, map]);
   return null;
 }
 
@@ -184,17 +197,16 @@ function SpotPopupContent({
   return (
     <div className="min-w-[200px] max-w-[240px]">
       {spot.image_url && (
-        <img src={spot.image_url} alt={spot.title} className="w-full h-28 object-cover rounded-xl mb-2" />
+        <img src={spot.image_url} alt={spot.title} className="w-full h-28 object-cover rounded-xl mb-2 border border-[#1D2B23]" />
       )}
-      <p className="font-extrabold text-slate-900 text-sm leading-snug">{spot.title}</p>
-      <p className="text-xs font-bold text-slate-500 mb-2">{spot.locality}</p>
+      <p className="font-extrabold text-white text-sm leading-snug">{spot.title}</p>
+      <p className="text-xs font-bold text-[#93A89A] mb-2">{spot.locality}</p>
       <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border mb-3 ${statusBadgeClass(spot.status)}`}>
         {spot.status}
       </span>
       <Link
         href="/cleankin#drives"
-        className="block text-center px-4 py-2 rounded-full text-white text-xs font-black hover:brightness-110 transition-all"
-        style={{ backgroundColor: '#0D5C75' }}
+        className="block text-center px-4 py-2 rounded-xl bg-[#35F27C] text-[#04120A] text-xs font-black hover:brightness-110 transition-all"
       >
         Join Cleanup / View Details
       </Link>
@@ -202,34 +214,34 @@ function SpotPopupContent({
         type="button"
         onClick={handleDelete}
         disabled={isDeleting}
-        className="w-full mt-2 px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-1.5"
+        className="w-full mt-2 px-4 py-2.5 rounded-xl bg-[#FF5470] hover:bg-[#ff6b86] text-[#1A0509] text-xs font-black transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-1.5"
       >
         🗑 {isDeleting ? 'Deleting spot...' : 'Delete Spot'}
       </button>
       {deleteError && (
-        <p className="text-xs font-bold text-red-600 mt-1">{deleteError}</p>
+        <p className="text-xs font-bold text-[#FF8FA3] mt-1">{deleteError}</p>
       )}
       {scheduled && (
         <button
           type="button"
           onClick={handleCancelDrive}
           disabled={isCancelling}
-          className="w-full mt-2 px-4 py-2.5 rounded-full border-2 border-amber-300 text-amber-800 text-xs font-black hover:bg-amber-50 transition-all cursor-pointer"
+          className="w-full mt-2 px-4 py-2.5 rounded-xl border-2 border-amber-400/50 text-amber-300 text-xs font-black hover:bg-amber-400/10 transition-all cursor-pointer"
         >
           {isCancelling ? 'Cancelling drive...' : 'Cancel linked drive'}
         </button>
       )}
       {driveError && (
-        <p className="text-xs font-bold text-red-600 mt-1">{driveError}</p>
+        <p className="text-xs font-bold text-[#FF8FA3] mt-1">{driveError}</p>
       )}
       {driveNote && (
-        <p className="text-xs font-bold text-slate-500 mt-1">{driveNote}</p>
+        <p className="text-xs font-bold text-[#93A89A] mt-1">{driveNote}</p>
       )}
     </div>
   );
 }
 
-export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSpotDeleted, onDriveCancelled, picking = false, pendingPin = null, onPick }: { statusFilter?: SpotStatusFilter; refreshKey?: number; onSpotDeleted?: (spotId: string | number) => void; onDriveCancelled?: (spotId: string | number) => void; picking?: boolean; pendingPin?: { lat: number; lng: number } | null; onPick?: (lat: number, lng: number) => void }) {
+export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSpotDeleted, onDriveCancelled, picking = false, pendingPin = null, onPick, focusPin = null }: { statusFilter?: SpotStatusFilter; refreshKey?: number; onSpotDeleted?: (spotId: string | number) => void; onDriveCancelled?: (spotId: string | number) => void; picking?: boolean; pendingPin?: { lat: number; lng: number } | null; onPick?: (lat: number, lng: number) => void; focusPin?: { lat: number; lng: number; nonce: number } | null }) {
   const [spots, setSpots] = useState<DumpSpot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -269,16 +281,16 @@ export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSp
   const visibleSpots = spots.filter(s => matchesFilter(s.status, statusFilter));
 
   return (
-    <div className="relative w-full h-full min-h-[500px]">
+    <div className="relative w-full h-full min-h-[500px] bg-[#060A08]">
       {isLoading && (
-        <div className="absolute inset-0 z-[500] bg-slate-100 animate-pulse flex items-center justify-center rounded-[2rem]">
-          <p className="font-bold text-slate-400">Loading Chennai hotspots...</p>
+        <div className="absolute inset-0 z-[500] bg-[#060A08] animate-pulse flex items-center justify-center rounded-[2rem]">
+          <p className="font-black text-[#35F27C] tracking-widest text-sm">LOADING NIGHT OPS MAP...</p>
         </div>
       )}
       {picking && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[600] pointer-events-none">
-          <div className="ck-glass border border-[#0D5C75]/30 shadow-xl rounded-full px-5 py-2.5 text-sm font-black text-[#0D5C75] flex items-center gap-2 animate-ck-float">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#0D5C75] animate-ping" />
+          <div className="ck-glass border border-[#35F27C]/40 shadow-[0_0_25px_rgba(53,242,124,0.3)] rounded-full px-5 py-2.5 text-sm font-black text-[#35F27C] flex items-center gap-2 animate-ck-float">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#35F27C] animate-ping" />
             Click anywhere on the map to drop your dump pin
           </div>
         </div>
@@ -288,13 +300,14 @@ export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSp
         zoom={DEFAULT_ZOOM}
         scrollWheelZoom={true}
         className="w-full h-full min-h-[500px] rounded-[2rem] z-0"
-        style={{ cursor: picking ? 'crosshair' : undefined }}
+        style={{ cursor: picking ? 'crosshair' : undefined, background: '#060A08' }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
         <MapClickHandler picking={picking} onPick={onPick} />
+        <FlyToPin target={focusPin} />
         {visibleSpots.map(spot => (
           <Marker
             key={spot.id}
@@ -315,9 +328,9 @@ export default function CleanKinMap({ statusFilter = 'all', refreshKey = 0, onSp
           <Marker position={[pendingPin.lat, pendingPin.lng]} icon={pendingPinIcon()}>
             <Popup>
               <div className="min-w-[200px] text-center">
-                <p className="font-extrabold text-slate-900 text-sm">New dump pin</p>
-                <p className="text-xs font-bold text-slate-500 mb-3">{pendingPin.lat.toFixed(5)}, {pendingPin.lng.toFixed(5)}</p>
-                <p className="text-xs font-semibold text-[#0D5C75]">Complete the report form to publish this pin.</p>
+                <p className="font-extrabold text-white text-sm">New dump pin</p>
+                <p className="text-xs font-bold text-[#93A89A] mb-3">{pendingPin.lat.toFixed(5)}, {pendingPin.lng.toFixed(5)}</p>
+                <p className="text-xs font-bold text-[#35F27C]">Complete the report form to publish this pin.</p>
               </div>
             </Popup>
           </Marker>

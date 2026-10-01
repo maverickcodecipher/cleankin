@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2, Sprout, Users, CalendarCheck, Recycle, ChevronsLeftRight } from 'lucide-react';
+import { Trash2, Sprout, Users, CalendarCheck, Recycle, ChevronsLeftRight, Trophy } from 'lucide-react';
 
 type Story = {
   id: string;
@@ -43,25 +43,25 @@ function BeforeAfterCard({ story }: { story: Story }) {
   const [pos, setPos] = useState(50);
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+    <div className="ck-card-3d bg-[#0B100D] rounded-3xl border border-[#1D2B23] hover:border-[#35F27C]/40 overflow-hidden flex flex-col transition-all">
       <div className="relative h-56 select-none">
         {/* Before layer */}
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-400 via-stone-500 to-stone-600 flex flex-col items-center justify-center text-white/90">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A1216] via-[#3A1A20] to-[#1A0B0E] flex flex-col items-center justify-center text-[#FF8FA3]/90">
           <Trash2 className="w-12 h-12 mb-2 opacity-80" />
-          <span className="text-xs font-black uppercase tracking-[0.2em]">Before</span>
+          <span className="text-xs font-black uppercase tracking-[0.2em]">Before · Boss level dump</span>
         </div>
         {/* After layer, clipped by slider */}
         <div
-          className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 to-[#0D5C75] flex flex-col items-center justify-center text-white"
+          className="absolute inset-0 bg-gradient-to-br from-[#35F27C] via-[#15803D] to-[#04120A] flex flex-col items-center justify-center text-[#04120A]"
           style={{ clipPath: `inset(0 0 0 ${pos}%)` }}
         >
           <Sprout className="w-12 h-12 mb-2" />
-          <span className="text-xs font-black uppercase tracking-[0.2em]">After</span>
+          <span className="text-xs font-black uppercase tracking-[0.2em]">After · Cleared</span>
         </div>
         {/* Divider handle */}
         <div className="absolute inset-y-0 flex items-center" style={{ left: `calc(${pos}% - 18px)` }}>
-          <div className="w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center">
-            <ChevronsLeftRight className="w-5 h-5 text-slate-700" />
+          <div className="w-9 h-9 rounded-full bg-[#35F27C] shadow-[0_0_18px_rgba(53,242,124,0.7)] flex items-center justify-center">
+            <ChevronsLeftRight className="w-5 h-5 text-[#04120A]" />
           </div>
         </div>
         <input
@@ -75,15 +75,15 @@ function BeforeAfterCard({ story }: { story: Story }) {
         />
       </div>
       <div className="p-6 flex-grow">
-        <p className="text-[11px] font-black uppercase tracking-widest text-[#0D5C75] mb-1">{story.locality}</p>
-        <h3 className="text-lg font-extrabold text-slate-900 mb-2">{story.title}</h3>
-        <p className="text-slate-600 font-medium text-sm mb-4">{story.result}</p>
+        <p className="text-[11px] font-black uppercase tracking-widest text-[#35F27C] mb-1">{story.locality}</p>
+        <h3 className="text-lg font-black text-white mb-2">{story.title}</h3>
+        <p className="text-[#93A89A] font-medium text-sm mb-4">{story.result}</p>
         <div className="flex flex-wrap gap-2">
-          <span className="bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full text-xs font-black border border-emerald-100">
+          <span className="bg-[#35F27C]/10 text-[#35F27C] px-3 py-1 rounded-full text-xs font-black border border-[#35F27C]/30">
             {story.waste} diverted
           </span>
-          <span className="bg-slate-50 text-slate-600 px-3 py-1 rounded-full text-xs font-black border border-slate-200">
-            {story.volunteers} volunteers
+          <span className="bg-white/5 text-[#93A89A] px-3 py-1 rounded-full text-xs font-black border border-[#1D2B23]">
+            {story.volunteers} players
           </span>
         </div>
       </div>
@@ -99,9 +99,9 @@ type Props = {
 
 export default function ImpactGallery({ cleanedCount = 0, drivesCount = 0, volunteerCount = 0 }: Props) {
   const metrics = [
-    { icon: Recycle, value: `${cleanedCount}`, label: 'Spots Cleaned' },
-    { icon: CalendarCheck, value: `${drivesCount}`, label: 'Drives Completed' },
-    { icon: Users, value: volunteerCount > 0 ? `${volunteerCount}+` : '0', label: 'Active Volunteers' },
+    { icon: Recycle, value: `${cleanedCount}`, label: 'Bosses Beaten' },
+    { icon: CalendarCheck, value: `${drivesCount}`, label: 'Raids Completed' },
+    { icon: Users, value: volunteerCount > 0 ? `${volunteerCount}+` : '0', label: 'Arena Players' },
   ];
 
   return (
@@ -113,25 +113,25 @@ export default function ImpactGallery({ cleanedCount = 0, drivesCount = 0, volun
           ))}
         </div>
       ) : (
-        <div className="text-center bg-white rounded-3xl border-2 border-dashed border-teal-200 px-8 py-14 mb-8">
-          <Sprout className="w-12 h-12 mx-auto mb-4 text-[#0D5C75]" />
-          <p className="text-xl font-extrabold text-slate-800">
-            0 kg diverted · Ready for your first drive
+        <div className="text-center bg-[#0B100D] rounded-3xl border-2 border-dashed border-[#35F27C]/30 px-8 py-14 mb-8">
+          <Trophy className="w-12 h-12 mx-auto mb-4 text-[#35F27C]" />
+          <p className="text-xl font-black text-white">
+            Trophy cabinet empty · Ready for your first raid
           </p>
-          <p className="text-slate-500 font-medium mt-2">
-            Report a spot or organize a drive — cleaned sites will shine here.
+          <p className="text-[#93A89A] font-medium mt-2">
+            Report a dump or start a raid — cleared sites will shine here.
           </p>
         </div>
       )}
       <div className="grid sm:grid-cols-3 gap-4">
         {metrics.map(m => (
-          <div key={m.label} className="bg-[#0D5C75] text-white rounded-3xl p-6 flex items-center gap-4 shadow-sm">
-            <div className="bg-white/15 p-3 rounded-2xl">
+          <div key={m.label} className="bg-gradient-to-br from-[#35F27C] to-[#15803D] text-[#04120A] rounded-3xl p-6 flex items-center gap-4 shadow-[0_0_35px_rgba(53,242,124,0.25)]">
+            <div className="bg-black/15 p-3 rounded-2xl">
               <m.icon className="w-7 h-7" />
             </div>
             <div>
               <p className="text-3xl font-black">{m.value}</p>
-              <p className="text-xs font-black uppercase tracking-widest text-white/70">{m.label}</p>
+              <p className="text-xs font-black uppercase tracking-widest opacity-70">{m.label}</p>
             </div>
           </div>
         ))}

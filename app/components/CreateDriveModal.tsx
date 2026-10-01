@@ -123,22 +123,22 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
       aria-label="Organize a cleanup drive"
     >
       <div
-        className="animate-ck-modal-in bg-white rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl border border-teal-100"
+        className="animate-ck-modal-in bg-[#0B100D] border border-[#35F27C]/25 rounded-[2rem] max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 shadow-[0_0_50px_rgba(53,242,124,0.15)]"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-2">
-          <h2 className="text-2xl font-extrabold text-slate-900">Organize a Drive</h2>
-          <button type="button" onClick={onClose} aria-label="Close" className="p-2 rounded-full hover:bg-slate-100 transition-colors">
-            <X className="w-5 h-5 text-slate-500" />
+          <h2 className="text-2xl font-extrabold text-white">Organize a Drive</h2>
+          <button type="button" onClick={onClose} aria-label="Close" className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5 text-[#93A89A]" />
           </button>
         </div>
-        <p className="text-sm font-bold text-slate-500 mb-6">
+        <p className="text-sm font-bold text-[#93A89A] mb-6">
           For NGOs and clubs — e.g. {ORG_EXAMPLES.join(', ')}.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-title">Drive Title</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-title">Drive Title</label>
             <input
               id="create-drive-title"
               type="text"
@@ -146,12 +146,12 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
               onChange={e => setTitle(e.target.value)}
               placeholder="Weekend Plastic Cleanup Drive"
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-org">Organization / Club Name</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-org">Organization / Club Name</label>
             <input
               id="create-drive-org"
               type="text"
@@ -159,29 +159,29 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
               onChange={e => setOrganizerName(e.target.value)}
               placeholder="Youth For Coast"
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-contact">Organizer Contact / WhatsApp Number</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-contact">Organizer Contact / WhatsApp Number</label>
             <input
               id="create-drive-contact"
               type="tel"
               value={organizerContact}
               onChange={e => setOrganizerContact(e.target.value)}
               placeholder="e.g. 98410 12345"
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-spot">Associated Spot / Locality</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-spot">Associated Spot / Locality</label>
             <select
               id="create-drive-spot"
               value={spotId}
               onChange={e => setSpotId(e.target.value)}
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm bg-white mb-3"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08] mb-3"
             >
               <option value="">Pick a reported spot…</option>
               {spots.map(s => (
@@ -194,29 +194,29 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
               onChange={e => setLocality(e.target.value)}
               placeholder="Or type a free-text locality"
               aria-label="Free text locality"
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-date">Event Date</label>
+              <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-date">Event Date</label>
               <input
                 id="create-drive-date"
                 type="date"
                 value={eventDate}
                 onChange={e => setEventDate(e.target.value)}
                 required
-                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               />
             </div>
             <div>
-              <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-slot">Morning Time Slot</label>
+              <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-slot">Morning Time Slot</label>
               <select
                 id="create-drive-slot"
                 value={timeSlot}
                 onChange={e => setTimeSlot(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm bg-white"
+                className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
               >
                 {TIME_SLOTS.map(s => (
                   <option key={s.value} value={s.value}>{s.label}</option>
@@ -226,26 +226,26 @@ export default function CreateDriveModal({ open, onClose, onDriveCreated }: Prop
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="create-drive-target">Target Volunteers Needed</label>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor="create-drive-target">Target Volunteers Needed</label>
             <input
               id="create-drive-target"
               type="number"
               min={1}
               value={targetVolunteers}
               onChange={e => setTargetVolunteers(e.target.value)}
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
 
           {error && (
-            <p className="text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
+            <p className="text-sm font-bold text-[#FF8FA3] bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl px-4 py-3">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 rounded-full text-white font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
-            style={{ backgroundColor: '#0D5C75' }}
+            className="w-full py-4 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(53,242,124,0.35)]"
+            style={{ backgroundColor: '#35F27C' }}
           >
             {isSubmitting ? (
               <>

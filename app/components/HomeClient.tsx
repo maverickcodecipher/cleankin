@@ -11,9 +11,10 @@ import type { WardLeaderboardEntry, Ward } from '@/types/database';
 interface HomeClientProps {
   initialLeaderboard: WardLeaderboardEntry[];
   initialWards: Ward[];
+  isDemo?: boolean;
 }
 
-export default function HomeClient({ initialLeaderboard, initialWards }: HomeClientProps) {
+export default function HomeClient({ initialLeaderboard, initialWards, isDemo = false }: HomeClientProps) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showMyReports, setShowMyReports] = useState(false);
   const [showOrganizeModal, setShowOrganizeModal] = useState(false);
@@ -38,40 +39,41 @@ export default function HomeClient({ initialLeaderboard, initialWards }: HomeCli
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <section className="relative w-full overflow-hidden bg-slate-50">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `radial-gradient(circle, #F97316 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
+    <div className="flex flex-col w-full bg-[#060A08]">
+      <section className="relative w-full overflow-hidden bg-[#080D0A] border-b border-[#1D2B23]">
+        <div className="ck-arena-grid absolute inset-0 opacity-60" />
+        <div className="pointer-events-none absolute -top-24 right-1/4 h-80 w-80 rounded-full bg-[#35F27C]/12 blur-[110px]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative">
           <div className="max-w-2xl">
-            <span className="inline-block bg-civic-orange/10 text-civic-orange text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-              Civic Audit Platform
+            <span className="inline-flex items-center gap-2 bg-[#35F27C]/10 border border-[#35F27C]/30 text-[#35F27C] text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+              Season 01 · Civic audit arena
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.05]">
+            <h1 className="ck-text-3d text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-6 leading-[1.02]">
               CleanKin Chennai —<br />
-              <span className="text-civic-orange">Track Every Dump.</span>
+              <span className="bg-gradient-to-r from-[#35F27C] to-[#A3E635] bg-clip-text text-transparent">Track Every Dump.</span>
             </h1>
-            <p className="text-lg sm:text-xl text-slate-600 mb-10 leading-relaxed">
-              See which wards lead in civic cleanup. Report dump spots, monitor ward-level progress, and help keep Chennai spotless.
+            <p className="text-lg sm:text-xl text-[#93A89A] mb-10 leading-relaxed">
+              See which zones lead the Clean League. Report dumps, drain rival XP, and crown Chennai's cleanest area boss.
             </p>
             <div className="flex flex-wrap gap-4">
               <button
                 type="button"
                 onClick={() => setShowReportModal(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-civic-orange text-white font-bold text-lg hover:brightness-110 transition-all shadow-lg shadow-civic-orange/20"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-[#35F27C] text-[#04120A] font-black text-lg hover:brightness-110 transition-all shadow-[0_0_30px_rgba(53,242,124,0.35)]"
               >
                 Report a Dump
               </button>
               <button
                 type="button"
                 onClick={() => setShowOrganizeModal(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-civic-orange text-civic-orange font-bold text-lg hover:bg-civic-orange/5 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-[#35F27C]/50 text-[#35F27C] font-black text-lg hover:bg-[#35F27C]/10 transition-all"
               >
                 Organize a Drive
               </button>
               <button
                 type="button"
                 onClick={handleScrollToEvents}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-slate-300 text-slate-700 font-bold text-lg hover:border-civic-orange hover:text-civic-orange hover:bg-civic-orange/5 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-[#2A3B32] text-white font-black text-lg hover:border-[#A3E635] hover:text-[#A3E635] transition-all"
               >
                 Explore Drives
               </button>
@@ -80,16 +82,13 @@ export default function HomeClient({ initialLeaderboard, initialWards }: HomeCli
         </div>
       </section>
 
-      <section className="pb-24" id="leaderboard-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Ward Leaderboard</h2>
-              <p className="text-lg text-slate-600 mt-2">Real-time civic cleanliness rankings across Chennai</p>
-            </div>
-          </div>
-          <Leaderboard initialData={initialLeaderboard} />
+      <section className="py-16 sm:py-20" id="leaderboard-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-2 text-center">
+          <a href="/cleankin#map" className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#35F27C] hover:brightness-110">
+            Prefer the night radar? Play on the live map →
+          </a>
         </div>
+        <Leaderboard initialData={initialLeaderboard} isDemo={isDemo} />
       </section>
 
       <section className="pb-24" id="events-section">

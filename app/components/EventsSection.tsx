@@ -150,23 +150,23 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Upcoming Cleanup Drives</h2>
-            <p className="text-lg text-slate-600 mt-2">Join a drive, make a difference in your ward</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Upcoming Cleanup Drives</h2>
+            <p className="text-lg text-[#93A89A] mt-2">Join a drive, make a difference in your ward</p>
           </div>
         </div>
       </div>
 
       {error && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4">
-          <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-bold">{error}</div>
+          <div className="p-3 bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl text-[#FF8FA3] text-sm font-bold">{error}</div>
         </div>
       )}
 
       {events.length === 0 ? (
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center">
-            <p className="text-lg font-extrabold text-slate-800 mb-2">No upcoming drives</p>
-            <p className="text-sm text-slate-500">Be the first to organize a cleanup drive in your ward!</p>
+          <div className="bg-[#0B100D] border border-[#1D2B23] rounded-2xl p-12 text-center">
+            <p className="text-lg font-black text-white mb-2">No upcoming raids</p>
+            <p className="text-sm text-[#93A89A]">Be the first to organize a cleanup drive in your ward!</p>
           </div>
         </div>
       ) : (
@@ -177,7 +177,7 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
             const isEnrolled = enrolled.some((p) => p.id === user?.id);
 
             return (
-              <div key={event.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div key={event.id} className="bg-[#0B100D] border border-[#1D2B23] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 {event.status === 'cancelled' && (
                   <div className="bg-dump-rose/10 border-b border-dump-rose/20 px-6 py-3">
                     <div className="flex items-center gap-2">
@@ -190,17 +190,17 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="text-lg font-extrabold text-slate-900">{event.title}</h3>
-                      <p className="text-sm text-slate-500 mt-0.5">{event.description ?? ''}</p>
+                      <h3 className="text-lg font-extrabold text-white">{event.title}</h3>
+                      <p className="text-sm text-[#93A89A] mt-0.5">{event.description ?? ''}</p>
                     </div>
                     {event.status === 'scheduled' && (
-                      <span className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black uppercase border bg-emerald-50 text-emerald-800 border-emerald-200">
+                      <span className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black uppercase border bg-[#35F27C]/15 text-[#35F27C] border-[#35F27C]/40">
                         Scheduled
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-semibold text-slate-600 mb-4">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-semibold text-[#93A89A] mb-4">
                     <span>📅 {getDateStr(event.event_date)}</span>
                     <span>🕐 {getTimeStr(event.event_time)}</span>
                     {event.meeting_point && <span>📍 {event.meeting_point}</span>}
@@ -209,19 +209,19 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                   {/* Organizer */}
                   {event.organizer_id && (
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-full bg-civic-orange/10 flex items-center justify-center">
-                        <span className="text-civic-orange text-xs font-black">
+                      <div className="w-8 h-8 rounded-full bg-[#35F27C]/15 border border-[#35F27C]/40 flex items-center justify-center">
+                        <span className="text-[#35F27C] text-xs font-black">
                           {event.organizer_id.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-sm font-semibold text-slate-700">Organizer</span>
+                      <span className="text-sm font-semibold text-[#C7D6CC]">Organizer</span>
                     </div>
                   )}
 
                   {/* Ward */}
                   {event.ward_id && (
                     <div className="mb-4">
-                      <span className="inline-block px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                      <span className="inline-block px-2.5 py-1 rounded-full bg-white/5 border border-[#1D2B23] text-[#C7D6CC] text-xs font-bold">
                         Ward {event.ward_id}
                       </span>
                     </div>
@@ -230,22 +230,22 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                   {/* Enrolled Volunteers */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-1">
-                      <span className="text-sm font-bold text-slate-600">{enrolled.length}</span>
-                      <span className="text-sm text-slate-500">volunteer{enrolled.length !== 1 ? 's' : ''}</span>
+                      <span className="text-sm font-bold text-[#93A89A]">{enrolled.length}</span>
+                      <span className="text-sm text-[#93A89A]">volunteer{enrolled.length !== 1 ? 's' : ''}</span>
                     </div>
                     {enrolled.length > 0 && (
                       <div className="flex -space-x-2">
                         {enrolled.slice(0, 3).map((p) => (
                           <div
                             key={p.id}
-                            className="w-7 h-7 rounded-full border-2 border-white bg-civic-orange flex items-center justify-center text-white text-[10px] font-black"
+                            className="w-7 h-7 rounded-full border-2 border-[#060A08] bg-[#35F27C] flex items-center justify-center text-[#04120A] text-[10px] font-black"
                             title={p.full_name ?? 'Volunteer'}
                           >
                             {(p.full_name ?? '?').charAt(0).toUpperCase()}
                           </div>
                         ))}
                         {enrolled.length > 3 && (
-                          <div className="w-7 h-7 rounded-full border-2 border-white bg-slate-300 flex items-center justify-center text-white text-[10px] font-black">
+                          <div className="w-7 h-7 rounded-full border-2 border-[#060A08] bg-[#2A3B32] flex items-center justify-center text-white text-[10px] font-black">
                             +{enrolled.length - 3}
                           </div>
                         )}
@@ -255,14 +255,14 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
 
                   {/* Action Buttons */}
                   {event.status === 'cancelled' ? (
-                    <div className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm text-center">
+                    <div className="w-full py-2.5 rounded-xl bg-white/5 border border-[#1D2B23] text-[#5C7263] font-bold text-sm text-center">
                       Drive Cancelled
                     </div>
                   ) : isEnrolled ? (
                     <button
                       type="button"
                       onClick={() => handleLeave(event.id)}
-                      className="w-full py-3 rounded-xl border-2 border-slate-200 text-slate-600 font-bold text-sm hover:border-dump-rose hover:text-dump-rose hover:bg-rose-50 transition-all focus:outline-none"
+                      className="w-full py-3 rounded-xl border-2 border-[#1D2B23] text-[#93A89A] font-bold text-sm hover:border-dump-rose hover:text-dump-rose hover:bg-[#FF5470]/10 transition-all focus:outline-none"
                     >
                       Leave Drive
                     </button>
@@ -270,7 +270,7 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                     <button
                       type="button"
                       onClick={() => handleCancelClick(event.id)}
-                      className="w-full py-3 rounded-xl border-2 border-dump-rose/20 text-dump-rose font-bold text-sm hover:bg-rose-50 hover:border-dump-rose transition-all focus:outline-none"
+                      className="w-full py-3 rounded-xl border-2 border-dump-rose/20 text-dump-rose font-bold text-sm hover:bg-[#FF5470]/10 hover:border-dump-rose transition-all focus:outline-none"
                     >
                       Cancel Drive
                     </button>
@@ -278,7 +278,7 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                     <button
                       type="button"
                       onClick={() => handleJoin(event.id)}
-                      className="w-full py-3 rounded-full bg-civic-orange text-white font-bold text-sm hover:brightness-110 transition-all focus:outline-none"
+                      className="w-full py-3 rounded-2xl bg-[#35F27C] text-[#04120A] font-black text-sm hover:brightness-110 transition-all focus:outline-none shadow-[0_0_20px_rgba(53,242,124,0.35)]"
                     >
                       Join Drive
                     </button>
@@ -292,11 +292,11 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                     onClick={() => { setShowCancelPrompt(null); setError(''); }}
                   >
                     <div
-                      className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl"
+                      className="bg-[#0B100D] rounded-3xl max-w-md w-full p-8 shadow-[0_0_50px_rgba(53,242,124,0.15)] border border-[#35F27C]/25"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <h3 className="text-xl font-extrabold text-slate-900 mb-2">Cancel This Drive?</h3>
-                      <p className="text-sm text-slate-500 mb-4">Select a reason. This action cannot be undone.</p>
+                      <h3 className="text-xl font-extrabold text-white mb-2">Cancel This Drive?</h3>
+                      <p className="text-sm text-[#93A89A] mb-4">Select a reason. This action cannot be undone.</p>
 
                       <div className="space-y-2 max-h-48 overflow-y-auto mb-4">
                         {REASON_OPTIONS.map((reason) => (
@@ -304,8 +304,8 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                             key={reason}
                             className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
                               selectedReason === reason
-                                ? 'border-civic-orange bg-civic-orange/5'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-[#35F27C] bg-[#35F27C]/10'
+                                : 'border-[#1D2B23] hover:border-[#35F27C]/40'
                             }`}
                           >
                             <input
@@ -314,20 +314,20 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                               value={reason}
                               checked={selectedReason === reason}
                               onChange={() => setSelectedReason(reason)}
-                              className="accent-civic-orange"
+                              className="accent-[#35F27C]"
                             />
-                            <span className="text-sm font-semibold text-slate-700">{reason}</span>
+                            <span className="text-sm font-semibold text-[#C7D6CC]">{reason}</span>
                           </label>
                         ))}
                       </div>
 
-                      {error && <p className="text-sm font-bold text-red-600 mb-3">{error}</p>}
+                      {error && <p className="text-sm font-bold text-[#FF8FA3] mb-3">{error}</p>}
 
                       <div className="flex gap-3">
                         <button
                           type="button"
                           onClick={() => { setShowCancelPrompt(null); setError(''); }}
-                          className="flex-1 py-3 rounded-full border-2 border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all"
+                          className="flex-1 py-3 rounded-2xl border-2 border-[#1D2B23] text-[#93A89A] font-bold text-sm hover:bg-white/5 transition-all"
                         >
                           Keep Drive
                         </button>
@@ -335,7 +335,7 @@ export default function EventsSection({ onEventChange }: EventsSectionProps) {
                           type="button"
                           onClick={handleConfirmCancel}
                           disabled={isCancelling || !selectedReason}
-                          className="flex-1 py-3 rounded-full bg-dump-rose text-white font-bold text-sm hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-wait"
+                          className="flex-1 py-3 rounded-2xl bg-[#FF5470] text-[#1A0509] font-black text-sm hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-wait"
                         >
                           {isCancelling ? 'Cancelling...' : 'Confirm'}
                         </button>

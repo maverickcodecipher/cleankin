@@ -156,28 +156,28 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
       aria-label="Report a dump spot"
     >
       <div
-        className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-8"
+        className="animate-ck-modal-in bg-[#0B100D] border border-[#35F27C]/25 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-[0_0_50px_rgba(53,242,124,0.15)] p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900">Report a Dump Spot</h2>
-            <p className="text-sm font-semibold text-slate-500">Pin it on the Chennai Civic Map.</p>
+            <h2 className="text-2xl font-black text-white">Report a Dump Spot</h2>
+            <p className="text-sm font-semibold text-[#93A89A]">Pin it on the night radar. +25 XP for your zone.</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 transition-colors" aria-label="Close">
-            <svg className="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 transition-colors" aria-label="Close">
+            <svg className="w-6 h-6 text-[#93A89A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {!isAuthenticated ? (
-          <div className="bg-civic-orange/5 border border-civic-orange/20 rounded-2xl p-6 text-center mb-4">
-            <p className="text-slate-700 font-semibold mb-4">You need to sign in to report dump spots.</p>
+          <div className="bg-[#35F27C]/5 border border-[#35F27C]/25 rounded-2xl p-6 text-center mb-4">
+            <p className="text-[#C7D6CC] font-semibold mb-4">You need to sign in to report dump spots.</p>
             <button
               type="button"
               onClick={handleSignIn}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-civic-orange text-white font-bold hover:brightness-110 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -191,17 +191,17 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Location</label>
+              <label className="block text-sm font-bold text-white mb-2">Location</label>
               <button
                 type="button"
                 onClick={handleGetGPS}
                 disabled={gpsStatus === 'detecting'}
                 className={`w-full h-12 px-4 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 focus:outline-none ${
                   gpsStatus === 'acquired'
-                    ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+                    ? 'border-[#35F27C]/60 bg-[#35F27C]/10 text-[#35F27C]'
                     : gpsStatus === 'detecting'
-                    ? 'border-slate-300 bg-slate-50 text-slate-500 cursor-wait'
-                    : 'border-slate-200 bg-white text-slate-700 hover:border-civic-orange hover:bg-orange-50'
+                    ? 'border-[#1D2B23] bg-white/5 text-[#5C7263] cursor-wait'
+                    : 'border-[#1D2B23] bg-[#060A08] text-white hover:border-[#35F27C]/60 hover:bg-[#35F27C]/5'
                 }`}
               >
                 {gpsStatus === 'detecting' && '📍 Detecting location...'}
@@ -213,12 +213,12 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
             </div>
 
             <div>
-              <label htmlFor="ward-select" className="block text-sm font-bold text-slate-700 mb-1.5">Select Ward</label>
+              <label htmlFor="ward-select" className="block text-sm font-bold text-white mb-1.5">Select Zone Battleground</label>
               <select
                 id="ward-select"
                 value={selectedWardId}
                 onChange={(e) => setSelectedWardId(Number(e.target.value))}
-                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 font-semibold focus:border-civic-orange focus:outline-none"
+                className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] bg-[#060A08] text-white font-semibold focus:border-[#35F27C] focus:outline-none"
               >
                 <option value={0}>Choose a ward...</option>
                 {wards.map((w) => (
@@ -230,7 +230,7 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1.5">Photo</label>
+              <label className="block text-sm font-bold text-white mb-1.5">Photo</label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -243,7 +243,7 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="w-full h-14 rounded-xl border-2 border-dashed border-slate-300 hover:border-civic-orange text-sm font-bold text-slate-500 hover:text-civic-orange transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full h-14 rounded-xl border-2 border-dashed border-[#2A3B32] hover:border-[#35F27C] text-sm font-bold text-[#93A89A] hover:text-[#35F27C] transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {uploading ? (
                   <span className="flex items-center gap-2">
@@ -264,30 +264,30 @@ export default function ReportDumpModal({ open, onClose, wards, onReportSubmitte
                 <img src={photoPreview} alt="Preview" className="mt-3 w-full h-40 object-cover rounded-xl" />
               )}
               {photoUploadUrl && !photoPreview && (
-                <p className="text-xs text-emerald-600 mt-1 font-semibold">✓ Photo uploaded successfully</p>
+                <p className="text-xs text-[#35F27C] mt-1 font-semibold">✓ Photo uploaded successfully</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="dump-desc" className="block text-sm font-bold text-slate-700 mb-1.5">Description</label>
+              <label htmlFor="dump-desc" className="block text-sm font-bold text-white mb-1.5">Intel (description)</label>
               <textarea
                 id="dump-desc"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Overflowing garbage near bus depot"
                 rows={3}
-                className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-civic-orange focus:outline-none font-semibold text-slate-800 text-sm"
+                className="w-full p-4 rounded-xl border-2 border-[#1D2B23] bg-[#060A08] focus:border-[#35F27C] focus:outline-none font-semibold text-white text-sm placeholder:text-[#5C7263]"
               />
             </div>
 
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-bold">{error}</div>
+              <div className="p-3 bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl text-[#FF8FA3] text-sm font-bold">{error}</div>
             )}
 
             <button
               type="submit"
               disabled={isSubmitting || uploading}
-              className="w-full h-14 rounded-full bg-civic-orange text-white font-extrabold hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-wait flex items-center justify-center gap-2"
+              className="w-full h-14 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-wait flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(53,242,124,0.35)]"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">

@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CleanKin Chennai — Civic Cleanup Network",
-  description: "Report dump spots, organize cleanup drives, and track civic cleanup progress across Chennai.",
+  title: "CleanKin Chennai — Civic Cleanup Arena",
+  description: "Report dump spots, battle for your zone on the Chennai Clean League, and track civic cleanup across the city.",
 };
 
 export const viewport: Viewport = {
@@ -42,12 +42,14 @@ export default function RootLayout({
           <main id="main-content" className="flex-grow">
             {children}
           </main>
-          <footer className="bg-slate-50 border-t border-slate-200 mt-auto">
+          <footer className="bg-[#05080A] border-t border-[#1D2B23] mt-auto relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#35F27C]/60 to-transparent" />
             <div className="max-w-7xl mx-auto px-6 py-12 text-center">
-              <p className="text-sm text-slate-600 mb-4">
-                &copy; 2026 CleanKin. All rights reserved. | <Link href="/terms" className="text-slate-800 underline font-semibold">Terms of Service</Link>
+              <p className="text-2xl font-black tracking-tight text-white mb-2">CleanKin <span className="text-[#35F27C]">Arena</span></p>
+              <p className="text-sm text-[#93A89A] mb-4">
+                &copy; 2026 CleanKin. All rights reserved. | <Link href="/terms" className="text-[#35F27C] underline font-semibold">Terms of Service</Link>
               </p>
-              <p className="text-xs text-slate-500 max-w-2xl mx-auto italic">
+              <p className="text-xs text-[#5C7263] max-w-2xl mx-auto italic">
                 CleanKin is dedicated to civic cleanup and community action across Chennai. We do not provide medical or nursing services.
               </p>
             </div>

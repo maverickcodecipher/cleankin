@@ -95,21 +95,21 @@ function RsvpModal({
       aria-label={`Join ${drive.title}`}
     >
       <div
-        className="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl"
+        className="animate-ck-modal-in bg-[#0B100D] border border-[#35F27C]/25 rounded-[2rem] max-w-md w-full p-8 shadow-[0_0_50px_rgba(53,242,124,0.15)]"
         onClick={e => e.stopPropagation()}
       >
         {done ? (
           <div className="text-center py-4">
             <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-extrabold text-slate-900 mb-3">You&apos;re registered!</h3>
-            <p className="text-slate-600 font-medium mb-6">
+            <h3 className="text-2xl font-extrabold text-white mb-3">You&apos;re registered!</h3>
+            <p className="text-[#93A89A] font-medium mb-6">
               The organizers will WhatsApp you the meeting point details.
             </p>
             <button
               type="button"
               onClick={onClose}
-              className="px-8 py-3 rounded-full text-white font-bold hover:brightness-110 transition-all"
-              style={{ backgroundColor: '#0D5C75' }}
+              className="px-8 py-3 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all"
+              style={{ backgroundColor: '#35F27C' }}
             >
               Done
             </button>
@@ -117,15 +117,15 @@ function RsvpModal({
         ) : (
           <>
             <div className="flex items-start justify-between mb-2">
-              <h3 className="text-2xl font-extrabold text-slate-900">Join This Drive</h3>
-              <button type="button" onClick={onClose} aria-label="Close" className="p-2 rounded-full hover:bg-slate-100 transition-colors">
-                <X className="w-5 h-5 text-slate-500" />
+              <h3 className="text-2xl font-extrabold text-white">Join This Drive</h3>
+              <button type="button" onClick={onClose} aria-label="Close" className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                <X className="w-5 h-5 text-[#93A89A]" />
               </button>
             </div>
-            <p className="text-sm font-bold text-slate-500 mb-6">{drive.title}</p>
+            <p className="text-sm font-bold text-[#93A89A] mb-6">{drive.title}</p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="rsvp-name">Full Name</label>
+                <label className="block text-sm font-black text-white mb-1.5" htmlFor="rsvp-name">Full Name</label>
                 <input
                   id="rsvp-name"
                   type="text"
@@ -133,11 +133,11 @@ function RsvpModal({
                   onChange={e => setName(e.target.value)}
                   placeholder="Your full name"
                   required
-                  className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                  className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor="rsvp-phone">WhatsApp / Phone Number</label>
+                <label className="block text-sm font-black text-white mb-1.5" htmlFor="rsvp-phone">WhatsApp / Phone Number</label>
                 <input
                   id="rsvp-phone"
                   type="tel"
@@ -145,17 +145,17 @@ function RsvpModal({
                   onChange={e => setPhone(e.target.value)}
                   placeholder="e.g. 98410 12345"
                   required
-                  className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-[#0D5C75] focus:outline-none font-bold text-slate-800 text-sm"
+                  className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-[#35F27C] focus:outline-none font-bold text-white text-sm bg-[#060A08]"
                 />
               </div>
               {error && (
-                <p className="text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
+                <p className="text-sm font-bold text-[#FF8FA3] bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl px-4 py-3">{error}</p>
               )}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 rounded-full text-white font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#0D5C75' }}
+                className="w-full py-4 rounded-2xl bg-[#35F27C] text-[#04120A] font-black hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(53,242,124,0.35)]"
+                style={{ backgroundColor: '#35F27C' }}
               >
                 {isSubmitting ? (
                   <>
@@ -228,21 +228,21 @@ function DeleteDriveModal({
       aria-label={`Cancel ${drive.title}`}
     >
       <div
-        className="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl"
+        className="animate-ck-modal-in bg-[#0B100D] border border-[#35F27C]/25 rounded-[2rem] max-w-md w-full p-8 shadow-[0_0_50px_rgba(53,242,124,0.15)]"
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+        <div className="w-14 h-14 rounded-full bg-[#FF5470]/10 flex items-center justify-center mb-4">
           <Trash2 className="w-7 h-7 text-red-600" />
         </div>
-        <h3 className="text-xl font-extrabold text-slate-900 mb-2">Cancel this cleanup drive?</h3>
-        <p className="text-sm font-medium text-slate-600 mb-1">
+        <h3 className="text-xl font-extrabold text-white mb-2">Cancel this cleanup drive?</h3>
+        <p className="text-sm font-medium text-[#93A89A] mb-1">
           Are you sure you want to cancel this cleanup drive? This action cannot be undone.
         </p>
-        <p className="text-sm font-black text-slate-800 mb-5">{drive.title}</p>
+        <p className="text-sm font-black text-white mb-5">{drive.title}</p>
 
         {requiresPhone && (
           <div className="mb-4">
-            <label className="block text-sm font-black text-slate-800 mb-1.5" htmlFor={`cancel-phone-${drive.id}`}>
+            <label className="block text-sm font-black text-white mb-1.5" htmlFor={`cancel-phone-${drive.id}`}>
               Confirm with organizer contact number
             </label>
             <input
@@ -251,13 +251,13 @@ function DeleteDriveModal({
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="Enter organizer phone number"
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-red-400 focus:outline-none font-bold text-slate-800 text-sm"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] focus:border-red-400 focus:outline-none font-bold text-white text-sm bg-[#060A08]"
             />
           </div>
         )}
 
         {error && (
-          <p className="text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{error}</p>
+          <p className="text-sm font-bold text-[#FF8FA3] bg-[#FF5470]/10 border border-[#FF5470]/40 rounded-xl px-4 py-3 mb-4">{error}</p>
         )}
 
         <div className="flex gap-3">
@@ -265,7 +265,7 @@ function DeleteDriveModal({
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="flex-1 py-3.5 rounded-full border-2 border-slate-200 text-slate-600 font-black text-sm hover:bg-slate-50 transition-all disabled:opacity-60"
+            className="flex-1 py-3.5 rounded-2xl border-2 border-[#1D2B23] text-[#93A89A] font-black text-sm hover:bg-white/5 transition-all disabled:opacity-60"
           >
             Keep Drive
           </button>
@@ -273,7 +273,7 @@ function DeleteDriveModal({
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="flex-1 py-3.5 rounded-full bg-red-600 text-white font-black text-sm hover:bg-red-700 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 rounded-2xl bg-[#FF5470] text-[#1A0509] font-black text-sm hover:brightness-110 transition-all disabled:opacity-70 disabled:cursor-wait flex items-center justify-center gap-2"
           >
             {isDeleting ? (
               <>
@@ -325,23 +325,23 @@ export default function CleanupDriveCard({
         setTilt({ rx: -py * 8, ry: px * 10 });
       }}
       onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
-      className="ck-card-3d bg-white p-8 rounded-3xl border border-slate-100 shadow-lg shadow-teal-900/10 flex flex-col hover:shadow-2xl transition-shadow"
+      className="ck-card-3d bg-[#0B100D] p-8 rounded-3xl border border-[#1D2B23] shadow-[0_18px_50px_rgba(0,0,0,0.6)] flex flex-col hover:border-[#35F27C]/40 hover:shadow-[0_0_35px_rgba(53,242,124,0.12)] transition-all"
       style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-xl font-extrabold text-slate-900 leading-snug">{drive.title}</h3>
+        <h3 className="text-xl font-extrabold text-white leading-snug">{drive.title}</h3>
         {isLocked ? (
-          <span className="shrink-0 bg-slate-200 text-slate-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+          <span className="shrink-0 bg-white/5 border border-[#1D2B23] text-[#93A89A] px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
             Registration Closed (Supplies Finalized)
           </span>
         ) : (
-          <span className="shrink-0 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-200">
+          <span className="shrink-0 bg-[#35F27C]/15 text-[#35F27C] px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border border-[#35F27C]/40">
             Recruiting Volunteers
           </span>
         )}
       </div>
 
-      <div className="flex items-center gap-2 text-sm font-bold text-slate-500 mb-1">
+      <div className="flex items-center gap-2 text-sm font-bold text-[#93A89A] mb-1">
         <span>By {drive.organizer_name}</span>
         {wa && (
           <a
@@ -356,28 +356,28 @@ export default function CleanupDriveCard({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold text-slate-600 mb-5">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold text-[#93A89A] mb-5">
         <span className="inline-flex items-center gap-1.5">
-          <CalendarDays className="w-4 h-4 text-[#0D5C75]" />
+          <CalendarDays className="w-4 h-4 text-[#35F27C]" />
           {formatDriveDate(drive.event_date)}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="w-4 h-4 text-[#0D5C75]" />
+          <Clock className="w-4 h-4 text-[#35F27C]" />
           {drive.event_time ? drive.event_time.slice(0, 5) : '07:00'} · {slot}
         </span>
       </div>
 
       <div className="mb-2 flex items-center justify-between text-sm font-black">
         <span className="inline-flex items-center gap-1.5 text-slate-700">
-          <Users className="w-4 h-4 text-[#0D5C75]" />
+          <Users className="w-4 h-4 text-[#35F27C]" />
           {current} / {target} Volunteers Enrolled
         </span>
-        <span className="text-[#0D5C75]">{progress}%</span>
+        <span className="text-[#35F27C]">{progress}%</span>
       </div>
-      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-6" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+      <div className="h-2.5 bg-white/5 border border-[#1D2B23] rounded-full overflow-hidden mb-6" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
         <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${progress}%`, backgroundColor: isLocked ? '#94A3B8' : '#0D5C75' }}
+          className="ck-xp-fill h-full rounded-full transition-all duration-500"
+          style={{ width: `${progress}%` }}
         />
       </div>
 
@@ -385,7 +385,7 @@ export default function CleanupDriveCard({
         <button
           type="button"
           disabled
-          className="mt-auto w-full py-3.5 rounded-full bg-slate-200 text-slate-500 font-black text-sm cursor-not-allowed"
+          className="mt-auto w-full py-3.5 rounded-2xl bg-white/5 border border-[#1D2B23] text-[#5C7263] font-black text-sm cursor-not-allowed"
         >
           Registration Locked (Event Tomorrow)
         </button>
@@ -393,8 +393,8 @@ export default function CleanupDriveCard({
         <button
           type="button"
           onClick={() => setIsRsvpOpen(true)}
-          className="mt-auto w-full py-3.5 rounded-full text-white font-black text-sm hover:brightness-110 transition-all shadow-sm"
-          style={{ backgroundColor: '#0D5C75' }}
+          className="mt-auto w-full py-3.5 rounded-2xl bg-[#35F27C] text-[#04120A] font-black text-sm hover:brightness-110 transition-all shadow-[0_0_20px_rgba(53,242,124,0.35)]"
+          style={{ backgroundColor: '#35F27C' }}
         >
           Join This Drive
         </button>
@@ -413,7 +413,7 @@ export default function CleanupDriveCard({
           type="button"
           onClick={() => setIsDeleteOpen(true)}
           aria-label={`Cancel ${drive.title}`}
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border-2 border-red-200 text-xs font-black text-red-600 hover:bg-red-50 hover:border-red-400 transition-all"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-[#FF5470]/40 text-xs font-black text-[#FF8FA3] hover:bg-[#FF5470]/10 hover:border-[#FF5470]/70 transition-all"
         >
           <Trash2 className="w-3.5 h-3.5" />
           Cancel Drive
@@ -422,7 +422,7 @@ export default function CleanupDriveCard({
           type="button"
           onClick={() => setIsDeleteOpen(true)}
           aria-label={`Delete ${drive.title}`}
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-slate-900 text-xs font-black text-white hover:bg-red-600 transition-all"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 border border-[#1D2B23] text-xs font-black text-[#93A89A] hover:text-[#FF8FA3] hover:border-[#FF5470]/50 transition-all"
         >
           <Trash2 className="w-3.5 h-3.5" />
           Delete Drive

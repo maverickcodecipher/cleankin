@@ -41,31 +41,31 @@ export default function AuthModal() {
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative w-full max-w-md bg-background border border-slate-200 rounded-3xl shadow-2xl overflow-hidden transform transition-all p-8 md:p-10 text-left outline-none"
+        className="animate-ck-modal-in relative w-full max-w-md bg-[#0B100D] border border-[#35F27C]/25 rounded-3xl shadow-[0_0_50px_rgba(53,242,124,0.15)] overflow-hidden transform transition-all p-8 md:p-10 text-left outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute top-6 right-6 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none"
+          className="absolute top-6 right-6 p-2 rounded-full text-[#5C7263] hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
           aria-label="Close"
         >
           <X className="w-6 h-6" />
         </button>
 
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Sign in to CleanKin</h2>
-          <p className="text-slate-600 text-sm md:text-base max-w-xs mx-auto leading-normal">
+          <h2 className="text-3xl font-black text-white mb-2">Sign in to CleanKin</h2>
+          <p className="text-[#93A89A] text-sm md:text-base max-w-xs mx-auto leading-normal">
             Track cleanup drives and organize community action across Chennai.
           </p>
         </div>
 
         {isAuthenticated ? (
           <div className="space-y-4">
-            <p className="text-sm font-bold text-slate-700 text-center">You are already signed in.</p>
+            <p className="text-sm font-bold text-[#C7D6CC] text-center">You are already signed in.</p>
             <button
               type="button"
               onClick={() => { signOut(); setIsOpen(false); }}
-              className="w-full py-3 rounded-full bg-dump-rose text-white font-bold text-sm hover:brightness-110 transition-all"
+              className="w-full py-3 rounded-2xl bg-[#FF5470] text-[#1A0509] font-black text-sm hover:brightness-110 transition-all"
             >
               Sign Out
             </button>
@@ -84,7 +84,7 @@ export default function AuthModal() {
               setIsOpen(false);
             }}
             type="button"
-            className="w-full flex items-center justify-center h-13 px-4 rounded-full border-2 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-800 font-bold text-base transition-colors shadow-sm focus:outline-none"
+            className="w-full flex items-center justify-center h-13 px-4 rounded-2xl border-2 border-[#1D2B23] bg-[#060A08] hover:border-[#35F27C]/60 text-white font-bold text-base transition-colors shadow-sm focus:outline-none"
           >
             <svg className="w-5 h-5 mr-3 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -97,45 +97,45 @@ export default function AuthModal() {
         )}
 
         <div className="relative my-6 flex items-center justify-center">
-          <div className="absolute inset-x-0 border-t border-slate-200"></div>
-          <span className="relative bg-background px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="absolute inset-x-0 border-t border-[#1D2B23]"></div>
+            <span className="relative bg-[#0B100D] px-4 text-xs font-semibold text-[#5C7263] uppercase tracking-wider">
             or sign in with email/phone
           </span>
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); setIsOpen(false); }} className="space-y-4">
           <div>
-            <label htmlFor="auth-name" className="block text-sm font-bold text-slate-700 mb-1.5">
+            <label htmlFor="auth-name" className="block text-sm font-bold text-white mb-1.5">
               Full Name <span className="text-red-500">*</span>
             </label>
             <input
               id="auth-name"
               type="text"
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 focus:border-slate-600 focus:outline-none text-base text-slate-800 transition-colors"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] bg-[#060A08] hover:border-[#35F27C]/40 focus:border-[#35F27C] focus:outline-none text-base text-white transition-colors"
             />
           </div>
           <div>
-            <label htmlFor="auth-email" className="block text-sm font-bold text-slate-700 mb-1.5">
+            <label htmlFor="auth-email" className="block text-sm font-bold text-white mb-1.5">
               Email Address <span className="text-red-500">*</span>
             </label>
             <input
               id="auth-email"
               type="email"
               required
-              className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 focus:border-slate-600 focus:outline-none text-base text-slate-800 transition-colors"
+              className="w-full h-12 px-4 rounded-xl border-2 border-[#1D2B23] bg-[#060A08] hover:border-[#35F27C]/40 focus:border-[#35F27C] focus:outline-none text-base text-white transition-colors"
             />
           </div>
           <button
             type="submit"
-            className="w-full h-13 mt-2 rounded-full bg-slate-800 text-white font-bold text-base hover:bg-slate-900 transition-colors focus:outline-none flex items-center justify-center gap-2"
+            className="w-full h-13 mt-2 rounded-2xl bg-[#35F27C] text-[#04120A] font-black text-base hover:brightness-110 transition-colors focus:outline-none flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4 shrink-0" />
             Continue
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-500 mt-6 font-medium leading-relaxed">
+        <p className="text-center text-xs text-[#5C7263] mt-6 font-medium leading-relaxed">
           We respect your privacy. No spam, ever.
         </p>
       </div>

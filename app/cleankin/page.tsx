@@ -66,18 +66,18 @@ function StatBadge({ icon: Icon, value, suffix, label }: { icon: any; value: num
           setTilt({ rx: -py * 14, ry: px * 14 });
         }}
         onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
-        className="ck-card-3d bg-white/85 backdrop-blur px-6 py-5 rounded-3xl border border-teal-100 shadow-lg shadow-teal-900/10 flex items-center gap-4"
+        className="ck-card-3d bg-[#0B100D] backdrop-blur px-6 py-5 rounded-3xl border border-[#1D2B23] shadow-[0_18px_50px_rgba(0,0,0,0.6)] flex items-center gap-4"
         style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(0)` }}
       >
-        <div className="bg-gradient-to-br from-[#0D5C75] to-teal-500 p-3 rounded-2xl shadow-lg" style={{ transform: 'translateZ(30px)' }}>
-          <Icon className="w-7 h-7 text-white" />
+        <div className="bg-gradient-to-br from-[#35F27C] to-[#15803D] p-3 rounded-2xl shadow-[0_0_20px_rgba(53,242,124,0.4)]" style={{ transform: 'translateZ(30px)' }}>
+          <Icon className="w-7 h-7 text-[#04120A]" />
         </div>
         <div style={{ transform: 'translateZ(18px)' }}>
-          <p className="text-3xl font-black text-slate-900">
+          <p className="text-3xl font-black text-white">
             {count}
             {suffix}
           </p>
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">{label}</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[#93A89A]">{label}</p>
         </div>
       </div>
     </div>
@@ -98,6 +98,7 @@ export default function CleanKinPage() {
   const [picking, setPicking] = useState(false);
   const [pendingPin, setPendingPin] = useState<{ lat: number; lng: number } | null>(null);
   const [showMyReports, setShowMyReports] = useState(false);
+  const [focusPin, setFocusPin] = useState<{ lat: number; lng: number; nonce: number } | null>(null);
 
   // Open the report modal when triggered from the navbar (same tab or after navigation).
   useEffect(() => {
@@ -169,11 +170,30 @@ export default function CleanKinPage() {
     window.setTimeout(() => setToast(''), 5000);
   };
 
-  const handleSpotReported = () => {
+  const handleSpotReported = async () => {
     setMapRefreshKey(k => k + 1);
     setPicking(false);
     setPendingPin(null);
-    showToast('Spot reported! Your 3D pin is now live on the Chennai Civic Map.');
+    setMapFilter('all');
+    // Instant pin: fetch the freshest report and fly the night map to it.
+    try {
+      const { data } = await supabase
+        .from('dump_reports')
+        .select('id, latitude, longitude')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const row = data as { latitude?: number; longitude?: number } | null;
+      if (row && Number.isFinite(Number(row.latitude)) && Number.isFinite(Number(row.longitude))) {
+        setFocusPin({ lat: Number(row.latitude), lng: Number(row.longitude), nonce: Date.now() });
+        setTimeout(() => document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' }), 150);
+        showToast('Dump pinned! Flying you to your live pin on the night map.');
+        return;
+      }
+    } catch (err) {
+      console.error('latest pin fetch failed:', err);
+    }
+    showToast('Spot reported! Your pin is now live on the night map.');
   };
 
   const handleMapPick = (lat: number, lng: number) => {
@@ -203,26 +223,28 @@ export default function CleanKinPage() {
 
       {/* Quick Stats Bar — 3D tilt */}
       <section className="w-full max-w-7xl mx-auto px-1 sm:px-2">
-        <div className="bg-gradient-to-br from-teal-50/80 via-white to-orange-50/60 border border-teal-100 rounded-[2rem] p-6 md:p-8 flex flex-wrap justify-center gap-5 shadow-lg shadow-teal-900/5">
+        <div className="relative bg-[#0B100D] border border-[#1D2B23] rounded-[2rem] p-6 md:p-8 flex flex-wrap justify-center gap-5 overflow-hidden">
+          <div className="ck-arena-grid pointer-events-none absolute inset-0 opacity-40" />
           {STATS.map(s => (
             <StatBadge key={s.label} icon={s.icon} value={s.value} suffix={s.suffix} label={s.label} />
           ))}
         </div>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
-          <button type="button" onClick={() => setShowMyReports(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-sm font-black text-slate-600 hover:border-[#0D5C75] hover:text-[#0D5C75] transition-all">
+          <button type="button" onClick={() => setShowMyReports(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0B100D] border border-[#1D2B23] text-sm font-black text-white hover:border-[#35F27C] hover:text-[#35F27C] transition-all">
             <FolderOpen className="h-4 w-4" /> My Reports — delete / mark cleared
           </button>
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-sm font-bold text-slate-500">
-            <Trash2 className="h-4 w-4" /> Every spot & drive has Delete / Cancel
+          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0B100D] border border-[#1D2B23] text-sm font-bold text-[#93A89A]">
+            <Trash2 className="h-4 w-4 text-[#FF5470]" /> Every spot & drive has Delete / Cancel
           </span>
         </div>
       </section>
 
-      {/* Live Map — 3D frame + click-to-pin */}
+      {/* Live Map — night ops frame + click-to-pin */}
       <section id="map" className="w-full max-w-7xl mx-auto px-1 sm:px-2 scroll-mt-24">
         <div className="text-center mb-6">
-          <h2 className="ck-text-3d text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Live Chennai Civic Hotspots</h2>
-          <p className="text-slate-600 font-medium mb-5">Click <b>Pin on map</b>, then click the map to drop a 3D pin. Open any pin to Delete it or Cancel its linked drive.</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#35F27C] mb-2">Night ops · live pins</p>
+          <h2 className="ck-text-3d text-3xl md:text-5xl font-black tracking-tight text-white mb-3">CHENNAI DUMP RADAR</h2>
+          <p className="text-[#93A89A] font-medium mb-5">Hit <b className="text-white">Pin on map</b>, click the radar to drop a glowing pin. Report it → we fly you straight to your live pin. Open any pin to Delete it or Cancel its linked drive.</p>
           <div className="flex flex-wrap justify-center items-center gap-2.5">
             {MAP_FILTERS.map(f => (
               <button
@@ -232,10 +254,9 @@ export default function CleanKinPage() {
                 aria-pressed={mapFilter === f.value}
                 className={`px-5 py-2.5 rounded-full text-sm font-black transition-all duration-200 focus:outline-none ${
                   mapFilter === f.value
-                    ? 'text-white shadow-lg shadow-teal-900/25 scale-105'
-                    : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                    ? 'bg-[#35F27C] text-[#04120A] shadow-[0_0_20px_rgba(53,242,124,0.5)] scale-105'
+                    : 'bg-[#0B100D] text-[#93A89A] border border-[#1D2B23] hover:border-[#35F27C]/60 hover:text-white'
                 }`}
-                style={mapFilter === f.value ? { backgroundColor: '#0D5C75' } : undefined}
               >
                 {f.label}
               </button>
@@ -243,43 +264,42 @@ export default function CleanKinPage() {
             <button
               type="button"
               onClick={startPickMode}
-              className={`px-5 py-2.5 rounded-full text-sm font-black shadow-md transition-all focus:outline-none flex items-center gap-1.5 ${picking ? 'bg-orange-500 text-white animate-pulse' : 'text-white hover:brightness-110'}`}
-              style={picking ? undefined : { backgroundColor: '#0D5C75' }}
+              className={`px-5 py-2.5 rounded-full text-sm font-black shadow-md transition-all focus:outline-none flex items-center gap-1.5 ${picking ? 'bg-[#FF5470] text-white animate-pulse' : 'bg-[#35F27C] text-[#04120A] hover:brightness-110'}`}
             >
               <MousePointerClick className="h-4 w-4" />
               {picking ? 'Click map now…' : '+ Pin on map'}
             </button>
             {picking && (
-              <button type="button" onClick={() => setPicking(false)} className="px-5 py-2.5 rounded-full text-sm font-black bg-white border border-slate-300 text-slate-600 hover:bg-slate-50">
+              <button type="button" onClick={() => setPicking(false)} className="px-5 py-2.5 rounded-full text-sm font-black bg-[#0B100D] border border-[#1D2B23] text-[#93A89A] hover:text-white">
                 Cancel pin mode
               </button>
             )}
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="px-5 py-2.5 rounded-full text-sm font-black bg-white border-2 text-[#0D5C75] hover:bg-teal-50 transition-all"
-              style={{ borderColor: '#0D5C75' }}
+              className="px-5 py-2.5 rounded-full text-sm font-black bg-transparent border-2 border-[#35F27C]/60 text-[#35F27C] hover:bg-[#35F27C]/10 transition-all"
             >
               + Report a Spot
             </button>
           </div>
           {pendingPin && (
-            <p className="mt-3 inline-block text-sm font-bold text-[#0D5C75] bg-teal-50 border border-teal-200 rounded-full px-4 py-2">
+            <p className="mt-3 inline-block text-sm font-bold text-[#35F27C] bg-[#35F27C]/10 border border-[#35F27C]/40 rounded-full px-4 py-2">
               Pending pin: {pendingPin.lat.toFixed(5)}, {pendingPin.lng.toFixed(5)} — finish the form to publish · <button type="button" onClick={() => setPendingPin(null)} className="underline font-black">clear</button>
             </p>
           )}
         </div>
         <div className="perspective-1200">
-          <div className="ck-map-frame rounded-[2rem] overflow-hidden border border-teal-100 h-[560px] relative" style={{ transform: 'rotateX(2deg)' }}>
+          <div className="ck-map-frame rounded-[2rem] overflow-hidden border border-[#35F27C]/25 bg-[#060A08] h-[560px] relative" style={{ transform: 'rotateX(2deg)' }}>
             <CleanKinMap
               statusFilter={mapFilter}
               refreshKey={mapRefreshKey}
               picking={picking}
               pendingPin={pendingPin}
               onPick={handleMapPick}
+              focusPin={focusPin}
               onSpotDeleted={() => {
                 setMapRefreshKey(k => k + 1);
-                showToast('Spot deleted and removed from map.');
+                showToast('Spot deleted and removed from radar.');
               }}
               onDriveCancelled={() => {
                 setMapRefreshKey(k => k + 1);
@@ -295,14 +315,14 @@ export default function CleanKinPage() {
       <section id="drives" className="w-full max-w-7xl mx-auto px-1 sm:px-2 scroll-mt-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 text-center md:text-left">
           <div>
-            <h2 className="ck-text-3d text-3xl md:text-4xl font-extrabold text-slate-900">Active Cleanup Drives</h2>
-            <p className="text-lg text-slate-600 mt-2">Join a drive — or cancel / delete any drive you own. Every card has Delete.</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#35F27C] mb-2">Squad up · weekend raids</p>
+            <h2 className="ck-text-3d text-3xl md:text-5xl font-black tracking-tight text-white">ACTIVE CLEANUP RAIDS</h2>
+            <p className="text-lg text-[#93A89A] mt-2">Join a raid — or cancel / delete any drive you own. Every card has Delete.</p>
           </div>
           <button
             type="button"
             onClick={() => setIsOrganizeOpen(true)}
-            className="shrink-0 px-6 py-3.5 rounded-full border-2 font-black text-sm hover:bg-teal-50 transition-all shadow-sm"
-            style={{ borderColor: '#0D5C75', color: '#0D5C75' }}
+            className="shrink-0 px-6 py-3.5 rounded-2xl border-2 border-[#35F27C]/60 font-black text-sm text-[#35F27C] hover:bg-[#35F27C]/10 transition-all"
           >
             + Organize a Drive
           </button>
@@ -310,11 +330,11 @@ export default function CleanKinPage() {
         {isLoadingDrives ? (
           <div className="grid md:grid-cols-2 gap-6">
             {[0, 1].map(i => (
-              <div key={i} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
-                <div className="h-6 bg-slate-100 rounded-xl w-2/3" />
-                <div className="h-4 bg-slate-100 rounded-xl w-1/2" />
-                <div className="h-2.5 bg-slate-100 rounded-full w-full" />
-                <div className="h-12 bg-slate-100 rounded-full w-full" />
+              <div key={i} className="bg-[#0B100D] p-8 rounded-3xl border border-[#1D2B23] space-y-4 animate-pulse">
+                <div className="h-6 bg-[#1D2B23] rounded-xl w-2/3" />
+                <div className="h-4 bg-[#1D2B23] rounded-xl w-1/2" />
+                <div className="h-2.5 bg-[#1D2B23] rounded-full w-full" />
+                <div className="h-12 bg-[#1D2B23] rounded-full w-full" />
               </div>
             ))}
           </div>
@@ -336,16 +356,15 @@ export default function CleanKinPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center bg-white rounded-3xl border-2 border-dashed border-teal-200 px-8 py-14">
-            <CalendarDays className="w-12 h-12 mx-auto mb-4 text-[#0D5C75]" />
-            <p className="text-xl font-extrabold text-slate-800">
-              No active cleanup drives right now. Organize one below to mobilize local volunteers!
+          <div className="text-center bg-[#0B100D] rounded-3xl border-2 border-dashed border-[#35F27C]/30 px-8 py-14">
+            <CalendarDays className="w-12 h-12 mx-auto mb-4 text-[#35F27C]" />
+            <p className="text-xl font-extrabold text-white">
+              No active raids right now. Start one and rally your zone!
             </p>
             <button
               type="button"
               onClick={() => setIsOrganizeOpen(true)}
-              className="mt-6 px-8 py-3.5 rounded-full text-white font-black text-sm hover:brightness-110 transition-all"
-              style={{ backgroundColor: '#0D5C75' }}
+              className="mt-6 px-8 py-3.5 rounded-2xl bg-[#35F27C] text-[#04120A] font-black text-sm hover:brightness-110 transition-all"
             >
               + Organize a Drive
             </button>
@@ -354,34 +373,34 @@ export default function CleanKinPage() {
       </section>
 
       {/* Impact Showcase */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="w-full max-w-7xl mx-auto px-1 sm:px-2">
         <div className="text-center mb-10">
-          <span className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: '#0D5C75' }}>Community Impact</span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3">Before & After: Chennai Transformed</h2>
-          <p className="text-lg text-slate-600 mt-3 max-w-2xl mx-auto">Drag the handle on each card to compare. Real spots, real volunteers, real change.</p>
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-[#35F27C]">Trophy cabinet</span>
+          <h2 className="ck-text-3d text-3xl md:text-5xl font-black tracking-tight text-white mt-3">BEFORE & AFTER: CHENNAI TRANSFORMED</h2>
+          <p className="text-lg text-[#93A89A] mt-3 max-w-2xl mx-auto">Drag the handle on each card to compare. Real spots, real squads, real change.</p>
         </div>
         <ImpactGallery cleanedCount={cleanedCount} drivesCount={drives.length} volunteerCount={volunteerCount} />
       </section>
 
       {/* How it works */}
       <section className="w-full max-w-7xl mx-auto px-1 sm:px-2">
-        <h2 className="text-3xl font-bold text-center text-slate-900 mb-8">How CleanKin Works</h2>
+        <h2 className="ck-text-3d text-3xl font-black tracking-tight text-center text-white mb-8">HOW THE ARENA WORKS</h2>
         <div className="grid md:grid-cols-3 gap-6 perspective-1200">
           {[
-            { step: '01', title: 'Pin a dump in 3D', desc: 'Hit Pin on map, click the Leaflet map to drop a bouncing 3D pin, add photo + locality.' },
-            { step: '02', title: 'Mobilize & manage', desc: 'Link spots to weekend drives. Cancel drives, delete spots, or clear reports anytime.' },
-            { step: '03', title: 'Track progress', desc: 'Before/after gallery + ward stats keep every cleanup public and accountable.' },
+            { step: '01', title: 'Pin a dump at night', desc: 'Hit Pin on map, click the radar to drop a glowing pin, add photo + locality. Instant fly-to your live pin.' },
+            { step: '02', title: 'Move the leaderboard', desc: 'Every report is XP for your zone — watch its TVK area boss climb or crash the Clean League.' },
+            { step: '03', title: 'Raid & delete', desc: 'Join weekend raids. Delete spots, cancel drives, clear reports — full control, zero clutter.' },
           ].map(item => (
-            <div key={item.step} className="ck-card-3d bg-white p-8 rounded-3xl border border-slate-100 shadow-lg shadow-teal-900/5 hover:-translate-y-1.5 hover:shadow-xl transition-all">
-              <p className="text-sm font-black text-[#0D5C75] tracking-widest mb-3">{item.step}</p>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
-              <p className="text-slate-600">{item.desc}</p>
+            <div key={item.step} className="ck-card-3d bg-[#0B100D] p-8 rounded-3xl border border-[#1D2B23] hover:border-[#35F27C]/50 hover:-translate-y-1.5 hover:shadow-[0_0_35px_rgba(53,242,124,0.15)] transition-all">
+              <p className="text-sm font-black text-[#35F27C] tracking-widest mb-3">{item.step}</p>
+              <h3 className="text-xl font-black text-white mb-2">{item.title}</h3>
+              <p className="text-[#93A89A]">{item.desc}</p>
             </div>
           ))}
         </div>
         <div className="text-center mt-10">
-          <Link href="/cleankin#map" className="text-lg font-bold underline" style={{ color: '#0D5C75' }}>
-            View the Chennai cleanup map
+          <Link href="/cleankin#map" className="text-lg font-black underline text-[#35F27C]">
+            View the Chennai night radar
           </Link>
         </div>
       </section>
@@ -410,7 +429,7 @@ export default function CleanKinPage() {
       {toast && (
         <div
           role="status"
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1100] bg-slate-900 text-white text-sm font-bold px-6 py-4 rounded-2xl shadow-2xl max-w-md text-center"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1100] bg-[#0B100D] border border-[#35F27C]/50 text-white text-sm font-bold px-6 py-4 rounded-2xl shadow-[0_0_30px_rgba(53,242,124,0.3)] max-w-md text-center"
         >
           {toast}
         </div>
